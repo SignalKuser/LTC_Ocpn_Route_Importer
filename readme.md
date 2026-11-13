@@ -1,7 +1,7 @@
 ## LTC_Ocpn_Route_Importer v.1.1.25
 
 Multi-language (DE, NL, GB, FR)
-Download: https://github.com/SignalKuser?tab=repositories
+Download: [https://github.com/SignalKuser?tab=repositories](https://github.com/SignalKuser/LTC_Ocpn_Route_Importer/releases)
 Requirements:
 
 OpenCPN 32-bit version for Windows
