@@ -133,18 +133,19 @@ The weighting is determined by the remaining distance. For example, if a waypoin
 
 Cheers/C
 
+--------------- German
 
 ## LTC_Ocpn_Route_Importer   v.1.1.25
 Multi De, NL, GB, FR
 Download:  [https://github.com/SignalKuser?tab=repositories](https://github.com/SignalKuser/LTC_Ocpn_Route_Importer/releases)
 
 
-Requirements:
+# Requirements:
 
 OpenCPN 32Bit Version Windows
 Signal K, Raspberry Pi ARM64
 
-Signal K Vorbereitung:
+# Signal K Vorbereitung:
 
 Das Signal K Plugin (LTC_Ocpn_Route_Importer) kann kann lokale GPX Dateien verwenden, die auf Windows oder Raspberry liegen.
 Eleganter ist allerdings, die Route in OpenCPN zu zeichnen und dann "on the fly" an Signal K zu senden.
@@ -172,20 +173,20 @@ sudo apt-get update
 sudo apt-get install libeccodes-tools
 
 
-OpenCPN Vorbereitung:
+# OpenCPN Vorbereitung:
 
 Das Plugin "Signal K Route Sender" in Ocpn über "Plugins/ Plugin importieren" hinzufügen, danach aktivieren und
 in den Einstellungen die IP zu Signal K eintragen, der Port ist üblicherweise 3000 zu Signal K.
 dann den vorher erstellten Signal K Token in das Plugin eintragen.
 Damit ist das Plugin fertig eingerichtet und benötigt keine weiteren Verbindungseinstellungen seitens Ocpn!
 
-Opencpn Benutzung:
+# Opencpn Benutzung:
 In Ocpn eine Route zeichnen. mit der rechten Maus (Kontextmenü) auf einen Wegpunkt, Route und dort am besten unter Eigenschaften einen Namen geben.
 Danach unten unter Route "an Signal K senden".
 Die GPX Route wird damit nach Signal übertragen und liegt anschliessend unter /signalk/v2/api/resources/routes
 auch andere Signal K Plugins legen dort ihre Routen ab, auch diese können mit LTC_Ocpn_Route_Importer verwendet werden, z.b. Freeboard-SK, Binnacle usw.
 
-LTC_Ocpn_Route_Importer Benutzung:
+# LTC_Ocpn_Route_Importer Benutzung:
 
 
 Entweder die Route auswählen oder Routenquelle auf GPX umschalten und Datei auswählen. Enthält eine GPX Datei mehrere Routen kann man die separat anwählen. Auch sind mehrere GPX Dateien möglich (Mehrfachauswahl). Die Wegpunkte erscheinen unten. Unter Provider einen der Wetteranbieter auswählen, dort gibt es unterschiedliche Anbieter. Manche bieten das Wetter für einen bestimmten Zeitpunkt
@@ -193,15 +194,15 @@ nach Koordinaten an, Bei anderen werden automatisch Grib Dateien heruntergeladen
 Wetter downloaden:
 das Wetter wird heruntergeladen, den Wegpunkten zeitlich zugeordnet und  direkt gespeichert. Auswahl über "Gespeicherter Wetterlauf".
 
-Gespeicherter Wetterlauf:
+# Gespeicherter Wetterlauf:
 Auswahl für mehrere Versionen vom gleichen oder anderen Providern. Kann dort gelöscht werden.
 Kann sinnvoll sein um verschiedene Provider bei einer Route zu vergleichen.
 SOG Planwert:
 Das ist der theoretische, angenommene Speed over Ground bei Boot ohne Fahrt (Hafenplanung).
 Nachdem man den Wind eingeschätzt hat kann man dort den anzunehmenden SOG eintragen.
 Das ist sozusagen die Vorstufe für die ETA- Berechnung.
-ETA- Berechnung:
 
+# ETA- Berechnung:
 GPS,SOG,COG:
 Am besten aktivieren für die ETA. Position und tatsächliche Fahrt über Grund; enthält bereits Wind- und Strömungseinfluss.
 Wenn GPS, SOG und COG aktiv sind und die ETA auf GPS-Daten basiert, nimmt die App die gemessene SOG und berechnet mit COG,
@@ -229,11 +230,11 @@ STW – Speed Through Water:
 Wenn GPS/SOG fehlt, kann STW als Geschwindigkeitsbasis für die ETA dienen;
 mit Strömungsvektor wird die Fahrt über Grund prognostiziert. Ohne GPS-Position bleibt der tatsächliche Routenfortschritt unbekannt.
 
-AWS – Apparent Wind Speed:
+# AWS – Apparent Wind Speed:
 Für die ETA wird der aktuelle Signal-K-Wind für die künftigen Streckenabschnitte angenommen. Fehlt wahrer Wind,
 leitet die App ihn aus AWS/AWA sowie Bootsgeschwindigkeit und Kurs ab. Die LTC-Polare wird nur gelesen, nicht verändert.
 
-Heading True verwenden:
+# Heading True verwenden:
 Wenn aktiviert, richtet die App AWS/AWA mit "navigation.headingTrue" aus. Sonst nutzt sie COG als Näherung.
 Vorhandene STW wird für die Windberechnung aus AWS/AWA genutzt, sofern verfügbar. "STW – Speed Through Water steuert nur,
 ob STW zusätzlich als ETA-Geschwindigkeitsbasis dient.
@@ -252,7 +253,7 @@ rechnet die App mit 5 Stunden. Dadurch verschieben sich auch die ETAs der folgen
 Motor-SOG hat Vorrang, wenn die Maschine aktiviert ist. Im Segelmodus hat eine nutzbare Polare Vorrang vor GPS-SOG, STW und dem SOG-Planwert.
 Wie gut die ETA passt, hängt also auch davon ab, wie gut die gewählte Polare das Boot abbildet.
 
-Wegpunktradius:
+# Wegpunktradius:
 Der Wegpunkt gilt als erreicht bei eingestelltem Radius.
 
 Entfernung und Kurs zum nächsten Wegpunkt:
@@ -262,7 +263,7 @@ Hier wird Entfernung und Kurswinkel zum nächstgelegen Wegpunkt der Route angeze
 Erreicht man diesen Wegpunkt gelten alle Wegpunkte davor als abgefahren.
 
 
-Windgewichtung:
+# Windgewichtung:
 
 Der angezeigte Wind kommt vom Provider und ist foreccast. Der selbst gemessene Wind ist viel genauer und wird deshalb berücksichtig. Desto weiter man sich räumlich und zeitlich
 entfernt, nimmt der Bootswind (Windvektor = Windstärke und Richtung) mit der Gewichtung ab und spielt kaum eine Rolle. Nähert man sich einem Wegpunkt nimmt er wieder zu.
