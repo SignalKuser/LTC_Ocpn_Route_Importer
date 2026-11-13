@@ -273,6 +273,7 @@ Der Anteil richtet sich nach der verbleibenden Strecke. Liegt ein Wegpunkt zunä
 Handbreit/C
 
  <img width="1301" height="906" alt="Screenshot 2026-11-12 191952" src="https://github.com/user-attachments/assets/e3c17b43-54ac-4680-ab11-7a2f2379c03b" />
+<img width="1874" height="881" alt="Screenshot 2026-11-12 191927" src="https://github.com/user-attachments/assets/c9913475-839f-4402-abe3-bc7af3e6f4b6" />
 
 <img width="1909" height="912" alt="Screenshot 2026-11-12 192500" src="https://github.com/user-attachments/assets/45a9b08d-8abe-4370-ae3a-f9a74194696c" />
 <img width="1892" height="894" alt="Screenshot 2026-11-12 192119" src="https://github.com/user-attachments/assets/26474062-221c-48c4-ad83-8cdb0bbe8283" />
