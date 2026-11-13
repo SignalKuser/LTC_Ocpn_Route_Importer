@@ -270,9 +270,9 @@ entfernt, nimmt der Bootswind (Windvektor = Windstärke und Richtung) mit der Ge
 
 Der Anteil richtet sich nach der verbleibenden Strecke. Liegt ein Wegpunkt zunächst 3 nm vor dir und das Ziel insgesamt 6 nm entfernt, erhält er 50 % Bootswind und 50 % Providerwind. fährt man 2 nm weiter, sind es für denselben Wegpunkt 75 %  Bootswind und 25 % Providerwind. Passt sich dynamisch an.
 
-# Signal-K-Pfade prüfen\
+# Signal-K-Pfade prüfen
 Im Signal-K-Datenbrowser unter Data → Browser nach dem jeweiligen Pfad suchen. Für die eigenen Bootsdaten muss in der Spalte Context self stehen.\
-In den Spalten Value, Timestamp und Source lässt sich prüfen, welcher Wert ankommt, wann er zuletzt aktualisiert wurde und welche Quelle ihn liefert.\
+In den Spalten Value, Timestamp und Source lässt sich prüfen, welcher Wert ankommt, wann er zuletzt aktualisiert wurde und welche Quelle ihn liefert.
 
 
 **navigation.position**  &nbsp;&nbsp;&nbsp;      GPS-Position für Routenfortschritt, Entfernung und Kurs zum nächsten Wegpunkt\
@@ -290,7 +290,7 @@ Für den Bordwind genügt einer von zwei Datensätzen. Die App verwendet entwede
 den Bordwind aus AWS, AWA, Bootsgeschwindigkeit und einer Kursreferenz. Bei der Berechnung bevorzugt sie STW und verwendet bei Bedarf SOG.\
 Als Kursreferenz verwendet sie bei aktivierter Option das verfügbare Heading, sonst COG. Werte im Kontext smhi sind Providerdaten. Die Bordwindberechnung liest den Kontext self.\
 
-# Signal-K-API-Endpunkte\
+# Signal-K-API-Endpunkte
 
 Diese Endpunkte lassen sich im Browser öffnen, indem der jeweilige Pfad an die Adresse des Signal-K-Servers angehängt wird.\
 
