@@ -269,33 +269,6 @@ Der angezeigte Wind kommt vom Provider und ist foreccast. Der selbst gemessene W
 entfernt, nimmt der Bootswind (Windvektor = Windstärke und Richtung) mit der Gewichtung ab und spielt kaum eine Rolle. Nähert man sich einem Wegpunkt nimmt er wieder zu.
 
 Der Anteil richtet sich nach der verbleibenden Strecke. Liegt ein Wegpunkt zunächst 3 nm vor dir und das Ziel insgesamt 6 nm entfernt, erhält er 50 % Bootswind und 50 % Providerwind. fährt man 2 nm weiter, sind es für denselben Wegpunkt 75 %  Bootswind und 25 % Providerwind. Passt sich dynamisch an.
-Signal-K-Pfade prüfen
-Im Signal-K-Datenbrowser unter Data → Browser nach dem jeweiligen Pfad suchen. Für die eigenen Bootsdaten muss in der Spalte Context self stehen. In den Spalten Value, Timestamp und Source lässt sich prüfen, welcher Wert ankommt, wann er zuletzt aktualisiert wurde und welche Quelle ihn liefert.
-
-
-navigation.position	        GPS-Position für Routenfortschritt, Entfernung und Kurs zum nächsten Wegpunkt
-navigation.speedOverGround	Fahrt über Grund (SOG) für die ETA und als Ersatz für STW bei der Bordwindberechnung
-navigation.courseOverGroundTrue	Kurs über Grund (COG) für die ETA und als Näherung für die Bootsausrichtung, wenn kein Heading verwendet wird
-navigation.speedThroughWater	Fahrt durchs Wasser (STW) von der Logge für die ETA und die Bordwindberechnung
-navigation.headingTrue	Rechtweisende Ausrichtung des Bugs für die Bordwindberechnung, wenn „Heading True verwenden“ aktiviert ist
-environment.wind.speedApparent	Scheinbare Windgeschwindigkeit (AWS)
-environment.wind.angleApparent	Scheinbarer Windwinkel relativ zum Bug (AWA)
-environment.wind.speedTrue	Wahre Windgeschwindigkeit (TWS)
-environment.wind.directionTrue	Wahre Windrichtung bezogen auf rechtweisend Nord, aus der der Wind kommt
-
-
-Für den Bordwind genügt einer von zwei Datensätzen. Die App verwendet entweder TWS und wahre Windrichtung aus derselben Quelle oder berechnet den Bordwind aus AWS, AWA, Bootsgeschwindigkeit und einer Kursreferenz. Bei der Berechnung bevorzugt sie STW und verwendet bei Bedarf SOG. Als Kursreferenz verwendet sie bei aktivierter Option das verfügbare Heading, sonst COG. Werte im Kontext smhi sind Providerdaten. Die Bordwindberechnung liest den Kontext self.
-
-Signal-K-API-Endpunkte
-Diese Endpunkte lassen sich im Browser öffnen, indem der jeweilige Pfad an die Adresse des Signal-K-Servers angehängt wird.
-
-
-/signalk/v1/api/vessels/self/navigation/speedThroughWater	Beispiel zur direkten Prüfung eines Bordwerts. Die Antwort enthält value in m/s sowie Quelle und Zeitstempel, sofern verfügbar.
-/signalk/v2/api/vessels/self/navigation/course	Optionale aktive Navigation. Wenn die aktive Route zur ausgewählten Route passt, kann die App daraus den nächsten Wegpunkt und die Routenrichtung übernehmen.
-/signalk/v2/api/resources/routes	Liste der in Signal K gespeicherten Routen. Beim Löschen spricht die App die einzelne Route unter /signalk/v2/api/resources/routes/<Routen-ID> an.
-/signalk/v2/api/weather/_providers	Liste der in Signal K registrierten Wetteranbieter, etwa SMHI.
-/signalk/v2/api/weather/forecasts/point	Punktvorhersage eines in Signal K registrierten Wetteranbieters. Die App übergibt Anbieter und Wegpunktkoordinaten.
-
 
 
 Handbreit/C
