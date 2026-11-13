@@ -272,7 +272,12 @@ Der Anteil richtet sich nach der verbleibenden Strecke. Liegt ein Wegpunkt zunä
 
 # Signal-K-Pfade prüfen
 Im Signal-K-Datenbrowser unter Data → Browser nach dem jeweiligen Pfad suchen. Für die eigenen Bootsdaten muss in der Spalte Context self stehen. In den Spalten Value, Timestamp und Source lässt sich prüfen, welcher Wert ankommt, wann er zuletzt aktualisiert wurde und welche Quelle ihn liefert.
+
 Pfad im Datenbrowser	Verwendung in der App
+navigation.position	>> GPS-Position für Routenfortschritt, Entfernung und Kurs zum nächsten Wegpunkt
+navigation.speedOverGround	>>Fahrt über Grund (SOG) für die ETA und als Ersatz für STW bei der Bordwindberechnung
+navigation.courseOverGroundTrue	>>Kurs über Grund (COG) für die ETA und als Näherung für die Bootsausrichtung, wenn kein Heading verwendet wird
+
 navigation.position	GPS-Position für Routenfortschritt, Entfernung und Kurs zum nächsten Wegpunkt
 navigation.speedOverGround	Fahrt über Grund (SOG) für die ETA und als Ersatz für STW bei der Bordwindberechnung
 navigation.courseOverGroundTrue	Kurs über Grund (COG) für die ETA und als Näherung für die Bootsausrichtung, wenn kein Heading verwendet wird
