@@ -15,9 +15,9 @@ However, a more elegant approach is to plot the route in OpenCPN and send it to 
 
 To do this, create a user named "opencpn" in Signal K with read/write permissions,
 and then generate a token using the following command in the Raspberry Pi terminal:
-
-..signalk-generate-token -u opencpn -e 1y -s ~/.signalk/security.json..
-
+-------------------------------------------------------------------
+signalk-generate-token -u opencpn -e 1y -s ~/.signalk/security.json
+--------------------------------------------------------------------
 This is necessary to allow Signal K to accept data from OpenCPN. Make sure to note down, copy, or save the token for later use.
 LTC_Ocpn_Route_Importer Installation:
 
