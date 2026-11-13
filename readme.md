@@ -132,6 +132,17 @@ The wind data provided by the external source is a forecast. Since locally measu
 
 The weighting is determined by the remaining distance. For example, if a waypoint is 3 nautical miles (nm) ahead and the final destination is 6 nm away, the calculation will use 50% on-board wind data and 50% forecast data. If you travel another 2 nm closer, the weighting for that same waypoint shifts to 75% on-board wind data and 25% forecast data. This adjustment happens dynamically.
 
+# Boat-Based Wind Range
+The 5-level slider controls the sensitivity of the wind weighting. Beyond the selected distance or travel time, the weather provider’s wind data is applied at 100%.
+The slider determines the extent to which the wind currently measured at the boat’s location influences the ETA calculation. At the boat’s current position, this data carries a 100% weight. As a waypoint lies further along the route—and as the estimated travel time to reach it increases—the forecast from the selected weather provider carries progressively more weight. The distance factor accounts for the fact that wind conditions may differ further ahead, while the travel time factor accounts for the possibility that wind conditions may change by the time of arrival, even if the waypoint is nearby. For each waypoint, the system applies the threshold that is reached first (in relative terms). Once either of these limits is met, the weight of the boat-measured wind drops to 0%.\
+0.5 nm or 10 min\
+1 nm or 20 min\
+2 nm or 30 min\
+3 nm or 45 min\
+5 nm or 60 min
+
+# expected signal paths below in document
+
 Cheers/C
 
 --------------- German
@@ -270,6 +281,18 @@ Der angezeigte Wind kommt vom Provider und ist foreccast. Der selbst gemessene W
 entfernt, nimmt der Bootswind (Windvektor = Windstärke und Richtung) mit der Gewichtung ab und spielt kaum eine Rolle. Nähert man sich einem Wegpunkt nimmt er wieder zu.
 
 Der Anteil richtet sich nach der verbleibenden Strecke. Liegt ein Wegpunkt zunächst 3 nm vor dir und das Ziel insgesamt 6 nm entfernt, erhält er 50 % Bootswind und 50 % Providerwind. fährt man 2 nm weiter, sind es für denselben Wegpunkt 75 %  Bootswind und 25 % Providerwind. Passt sich dynamisch an.
+# Reichweite des Bootswinds 
+Der 5- stufige Schieber regelt die Empfindlichkeit der Windgewichtung.
+Ab dieser Entfernung oder Fahrzeit gilt 100 % Providerwind\
+Der Schieber bestimmt, wie weit der aktuell am Boot ermittelte Wind in die ETA-Berechnung einfließt. Direkt an der aktuellen Position zählt er zu 100 %. Je weiter ein Wegpunkt entlang der Route vorausliegt und je länger die geschätzte Fahrt dorthin dauert, desto stärker zählt die Vorhersage des gewählten Wetteranbieters.
+Die Entfernung berücksichtigt, dass der Wind weiter voraus anders sein kann. Die Fahrzeit bis zum Wegpunkt berücksichtigt, dass sich der Wind bis zur Ankunft ändern kann, auch wenn der Wegpunkt nah liegt. Für jeden Wegpunkt zählt die Grenze, die relativ gesehen weiter ausgeschöpft ist. Sobald eine der beiden Grenzen erreicht ist, fällt der Bootsanteil auf 0 %.\
+ 0,5 nm oder 10 min\
+	 1 nm oder 20 min\
+ 	2 nm oder 30 min\
+ 	3 nm oder 45 min\
+ 	5 nm oder 60 min
+
+
 
 # Signal-K-Pfade prüfen
 Im Signal-K-Datenbrowser unter Data → Browser nach dem jeweiligen Pfad suchen. Für die eigenen Bootsdaten muss in der Spalte Context self stehen.
