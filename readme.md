@@ -19,7 +19,8 @@ and then generate a token using the following command in the Raspberry Pi termin
 signalk-generate-token -u opencpn -e 1y -s ~/.signalk/security.json
 --------------------------------------------------------------------
 This is necessary to allow Signal K to accept data from OpenCPN. Make sure to note down, copy, or save the token for later use.
-LTC_Ocpn_Route_Importer Installation:
+
+# LTC_Ocpn_Route_Importer Installation:
 
 It is best to place the PowerShell script in the same folder as the plugin and run it from there.
 The script will automatically locate the plugin and the Signal K plugin directory on the Raspberry Pi and perform the installation.
@@ -292,7 +293,7 @@ Als Kursreferenz verwendet sie bei aktivierter Option das verfügbare Heading, s
 
 # Signal-K-API-Endpunkte
 
-Diese Endpunkte lassen sich im Browser öffnen, indem der jeweilige Pfad an die Adresse des Signal-K-Servers angehängt wird.\
+Diese Endpunkte lassen sich im Browser öffnen, indem der jeweilige Pfad an die Adresse des Signal-K-Servers angehängt wird.
 
 
 **/signalk/v1/api/vessels/self/navigation/speedThroughWater** &nbsp;&nbsp;&nbsp;  Beispiel zur direkten Prüfung eines Bordwerts. Die Antwort enthält value in m/s sowie Quelle und Zeitstempel, sofern verfügbar.\
