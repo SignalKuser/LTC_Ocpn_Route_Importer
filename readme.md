@@ -1,3 +1,12 @@
+## LTC_Ocpn_Route_Importer 1.1.37      //Update
+1. show route total distance
+2. added some Provider
+3. additionally optional Weatherdata
+3. killed several Bugs.
+
+<img width="1827" height="778" alt="image" src="https://github.com/user-attachments/assets/94fb468f-6781-4321-9da7-21ed1a684e53" />
+
+
 ## LTC_Ocpn_Route_Importer 1.1.33   //Update
 
 1. used Standard conncetion in Ocpn ( read readme inside package)
