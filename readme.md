@@ -1,3 +1,15 @@
+## LTC_Ocpn_Route_Importer 1.1.33   //Update
+
+1. used Standard conncetion in Ocpn ( read readme inside package)
+2. single send Route:
+<img width="1401" height="760" alt="Screenshot 2026-11-14 165459" src="https://github.com/user-attachments/assets/8972f8a7-a60e-424d-90e4-e893ac93874f" />
+
+
+multiple Routes send with one Click
+<img width="936" height="726" alt="Screenshot 2026-11-14 165426" src="https://github.com/user-attachments/assets/d31ad798-c5a3-45d1-af83-1683202266fd" />
+
+
+
 ## LTC_Ocpn_Route_Importer v.1.1.25
 
 Multi-language (DE, NL, GB, FR)
