@@ -10,7 +10,7 @@ multiple Routes send with one Click
 
 
 
-## LTC_Ocpn_Route_Importer v.1.1.25
+## LTC_Ocpn_Route_Importer v.1.1.32
 
 Multi-language (DE, NL, GB, FR)
 Download: [https://github.com/SignalKuser?tab=repositories](https://github.com/SignalKuser/LTC_Ocpn_Route_Importer/releases)
