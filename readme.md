@@ -6,7 +6,8 @@
 
  qtVlm data transmitter: on the fly to LTC_Ocpn_Route_Importer
  
-<img width="861" height="653" alt="Screenshot 2026-11-15 153731" src="https://github.com/user-attachments/assets/0c9ccf2d-46c9-4392-9cf9-a7f6bfdf4cbf" />
+<img width="985" height="710" alt="image" src="https://github.com/user-attachments/assets/03364d10-51d9-4e47-b402-e71d5cc8f0a8" />
+
 
  qtVlm data transmitter: on the fly to LTC_Ocpn_Route_Importer
 
