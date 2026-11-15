@@ -1,3 +1,16 @@
+## LTC_Ocpn_Route_Importerv.1.1.43
+1. extern Grib file Import
+2. qtVlm Directimport!
+
+<img width="685" height="475" alt="Screenshot 2026-11-15 153714" src="https://github.com/user-attachments/assets/b7d806ca-24b6-4434-8659-f89a9d773b5f" />
+<img width="861" height="653" alt="Screenshot 2026-11-15 153731" src="https://github.com/user-attachments/assets/0c9ccf2d-46c9-4392-9cf9-a7f6bfdf4cbf" />
+
+<img width="721" height="1009" alt="Screenshot 2026-11-15 153557" src="https://github.com/user-attachments/assets/5cc6351e-e695-44a5-8066-ce9124673ac3" />
+<img width="743" height="805" alt="Screenshot 2026-11-15 153622" src="https://github.com/user-attachments/assets/c017730e-9996-4f8f-8190-25d9895415aa" />
+
+
+
+
 
 ## LTC_Ocpn_Route_Importerv.1.1.40
 Wind weighting: If the boat-based wind and the provider-based wind largely cancel each other out during the blending process—leaving less than one-third of the sum of their weighted wind magnitudes—the source with the higher weighting takes precedence, contributing its full magnitude and direction. In the event of a tie, the boat-based wind is used.
