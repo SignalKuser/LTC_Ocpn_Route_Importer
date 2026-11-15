@@ -11,6 +11,8 @@
 
  qtVlm data transmitter: on the fly to LTC_Ocpn_Route_Importer gribs,routes, pois and more.
 
+<img width="1891" height="802" alt="image" src="https://github.com/user-attachments/assets/bbec2685-748f-430d-8520-c4ca2164da06" />
+qtVlm wants port 5555, so activate
 
 
 
