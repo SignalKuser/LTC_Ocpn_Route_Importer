@@ -1,4 +1,14 @@
-## LTC_Ocpn_Route_Importer 1.1.37      //Update
+## LTC_Ocpn_Route_Importer 1.1.39      
+1. implemented multiple deletion options in route and weather patterns
+2. Fixed provider timestamp error!
+3. few small changes
+4. weather weighting increased
+
+
+
+
+
+## LTC_Ocpn_Route_Importer 1.1.37      
 1. show route total distance
 2. added some Provider
 3. additionally optional Weatherdata
@@ -7,7 +17,7 @@
 <img width="1827" height="778" alt="image" src="https://github.com/user-attachments/assets/94fb468f-6781-4321-9da7-21ed1a684e53" />
 
 
-## LTC_Ocpn_Route_Importer 1.1.33   //Update
+## LTC_Ocpn_Route_Importer 1.1.33   
 
 1. used Standard conncetion in Ocpn ( read readme inside package)
 2. single send Route:
