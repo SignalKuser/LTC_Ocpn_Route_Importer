@@ -1,12 +1,12 @@
+
+## LTC_Ocpn_Route_Importerv.1.1.40
+Wind weighting: If the boat-based wind and the provider-based wind largely cancel each other out during the blending process—leaving less than one-third of the sum of their weighted wind magnitudes—the source with the higher weighting takes precedence, contributing its full magnitude and direction. In the event of a tie, the boat-based wind is used.
+
 ## LTC_Ocpn_Route_Importer 1.1.39      
 1. implemented multiple deletion options in route and weather patterns
 2. Fixed provider timestamp error!
 3. few small changes
 4. weather weighting increased
-
-
-
-
 
 ## LTC_Ocpn_Route_Importer 1.1.37      
 1. show route total distance
