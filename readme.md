@@ -9,7 +9,7 @@
 <img width="985" height="710" alt="image" src="https://github.com/user-attachments/assets/03364d10-51d9-4e47-b402-e71d5cc8f0a8" />
 
 
- qtVlm data transmitter: on the fly to LTC_Ocpn_Route_Importer
+ qtVlm data transmitter: on the fly to LTC_Ocpn_Route_Importer gribs,routes, pois and more.
 
 
 
