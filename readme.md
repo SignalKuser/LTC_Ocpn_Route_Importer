@@ -1,5 +1,5 @@
 ## LTC_Ocpn_Route_Importerv.1.1.44
-incl. OcpnPlugin.
+incl. OcpnPlugin
 user interface optimized
 
 ## LTC_Ocpn_Route_Importerv.1.1.43
