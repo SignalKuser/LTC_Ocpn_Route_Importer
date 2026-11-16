@@ -1,7 +1,9 @@
 ## LTC_Ocpn_Route_Importerv.1.1.44
+incl. OcpnPlugin.
 user interface optimized
 
 ## LTC_Ocpn_Route_Importerv.1.1.43
+incl. OcpnPlugin.
 1. extern Grib file Import
 2. qtVlm Directimport!
 
@@ -22,15 +24,18 @@ qtVlm wants port 5555, so activate
 
 
 ## LTC_Ocpn_Route_Importerv.1.1.40
+incl. OcpnPlugin.
 Wind weighting: If the boat-based wind and the provider-based wind largely cancel each other out during the blending process—leaving less than one-third of the sum of their weighted wind magnitudes—the source with the higher weighting takes precedence, contributing its full magnitude and direction. In the event of a tie, the boat-based wind is used.
 
-## LTC_Ocpn_Route_Importer 1.1.39      
+## LTC_Ocpn_Route_Importer 1.1.39 
+incl. OcpnPlugin.
 1. implemented multiple deletion options in route and weather patterns
 2. Fixed provider timestamp error!
 3. few small changes
 4. weather weighting increased
 
-## LTC_Ocpn_Route_Importer 1.1.37      
+## LTC_Ocpn_Route_Importer 1.1.37 
+incl. OcpnPlugin.
 1. show route total distance
 2. added some Provider
 3. additionally optional Weatherdata
@@ -39,7 +44,8 @@ Wind weighting: If the boat-based wind and the provider-based wind largely cance
 <img width="1827" height="778" alt="image" src="https://github.com/user-attachments/assets/94fb468f-6781-4321-9da7-21ed1a684e53" />
 
 
-## LTC_Ocpn_Route_Importer 1.1.33   
+## LTC_Ocpn_Route_Importer 1.1.33 
+incl. OcpnPlugin.
 
 1. used Standard conncetion in Ocpn ( read readme inside package)
 2. single send Route:
@@ -52,6 +58,7 @@ multiple Routes send with one Click
 
 
 ## LTC_Ocpn_Route_Importer v.1.1.32
+incl. OcpnPlugin.
 
 Multi-language (DE, NL, GB, FR)
 Download: [https://github.com/SignalKuser?tab=repositories](https://github.com/SignalKuser/LTC_Ocpn_Route_Importer/releases)
