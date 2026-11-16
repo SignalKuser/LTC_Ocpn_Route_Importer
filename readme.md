@@ -1,3 +1,6 @@
+## LTC_Ocpn_Route_Importerv.1.1.44
+user interface optimized
+
 ## LTC_Ocpn_Route_Importerv.1.1.43
 1. extern Grib file Import
 2. qtVlm Directimport!
