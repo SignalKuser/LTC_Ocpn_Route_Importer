@@ -1,7 +1,10 @@
-## LTC_Ocpn_Route_Importerv.1.1.44
+
+
+## LTC_Ocpn_Route_Importerv.1.1.47
 
 incl.OcpnPlugin-----
 user interface optimized
+Signal K online Install through signal K App-Webstore. 
 
 ## LTC_Ocpn_Route_Importerv.1.1.43
 incl. OcpnPlugin.
