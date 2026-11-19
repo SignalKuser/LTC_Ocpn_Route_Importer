@@ -1,0 +1,41 @@
+Signal K Route Sender 0.5.6
+==========================
+
+Verbindung
+----------
+Unter OpenCPN > Optionen > Verbindungen eine Signal-K-Verbindung mit
+Serveradresse und Port (normalerweise 3000) einrichten und aktivieren. Falls der Server
+eine Anmeldung verlangt, unter Erweitert den Auth Token eintragen und
+die Einstellungen mit OK uebernehmen.
+
+Der Sender verwendet automatisch die aktivierte Signal-K-Verbindung.
+Bei mehreren gueltigen, aktivierten Verbindungen hat ein eindeutiger
+Eintrag auf Port 3000 Vorrang. Ist kein Ziel eindeutig, zeigt der Sender
+den Grund an. Host, Port und Auth Token stammen aus OpenCPN.
+
+Benutzer und Token
+------------------
+Auf dem Zielserver muss ein Signal-K-Benutzer mit Schreibrecht fuer
+Routen vorhanden sein. Den Token im Terminal des Servers erzeugen:
+
+  signalk-generate-token -u opencpn -e 1y -s ~/.signalk/security.json
+
+opencpn durch den vorhandenen Signal-K-Benutzernamen ersetzen. -e 1y
+setzt die Gueltigkeit auf ein Jahr. -s muss auf die security.json des
+Zielservers zeigen. Den ausgegebenen Token im OpenCPN-Verbindungsmanager
+unter Auth Token eintragen.
+
+Routenversand
+-------------
+Fuer mehrere Routen das Signal-K-Symbol in der OpenCPN-Werkzeugleiste
+anklicken, Routen auswaehlen und auf Senden klicken. Fuer eine einzelne
+Route im Rechtsklick-Menue "Route an Signal K senden" waehlen.
+
+Jede Route kommt als eigener Eintrag in Signal K an. Das Ergebnis zeigt
+das verwendete Ziel und den Status jeder Route. Beim erneuten Versand wird die gespeicherte
+Signal-K-Routen-ID fuer dieses Ziel zur Aktualisierung verwendet.
+
+Referenzen
+----------
+https://demo.signalk.org/documentation/Security/Generating_Tokens.html
+https://demo.signalk.org/documentation/Developing/REST_APIs/Resources_API.html

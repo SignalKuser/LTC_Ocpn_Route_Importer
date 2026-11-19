@@ -1,0 +1,3 @@
+[submodule "opencpn-libs"]
+	path = incoming/signalk-route-sender/opencpn-libs
+	url = https://github.com/OpenCPN/opencpn-libs.git

@@ -1,0 +1,163 @@
+<article lang="de">
+<p>Multi De, NL, GB, FR
+Download:  <a href="https://github.com/SignalKuser/LTC_Ocpn_Route_Importer/releases">https://github.com/SignalKuser/LTC_Ocpn_Route_Importer/releases</a></p>
+<h3>Requirements</h3>
+<p>OpenCPN, 32-Bit-Version für Windows<br />
+Signal K, Raspberry Pi ARM64</p>
+<h3>Signal K Vorbereitung</h3>
+<p>Das Signal K Plugin (LTC_Ocpn_Route_Importer) kann lokale GPX Dateien verwenden, die auf Windows oder Raspberry liegen.
+Eleganter ist allerdings, die Route in OpenCPN zu zeichnen und dann &quot;on the fly&quot; an Signal K zu senden.</p>
+<p>Dazu legt man in Signal K einen User &quot;opencpn&quot;  mit Lese/Schreibrechten an,
+und muss dann im PI-Terminal mit folgendem Befehl einen Token erstellen:</p>
+<pre><code class="language-bash">signalk-generate-token -u opencpn -e 1y -s ~/.signalk/security.json
+</code></pre>
+<p>Das ist nötig, damit später Signal K die Opencpn Daten reinlässt. den Token für später merken bzw. kopieren und speichern.</p>
+<h3>LTC_Ocpn_Route_Importer Installation</h3>
+<p>das Powershellscript am besten mit dem Plugin in einen Ordner packen und dann dort starten.
+das Plugin und der Signal K Plugin Ordner auf dem Pi  wird automatisch gefunden und dort installiert.
+läuft Signal K schon einmal neu starten und danach in der Signal K Plugin Konfiguration auf &quot;enable&quot; setzen.
+Das Plugin selber erreicht man unter Webapps.</p>
+<h3>weitere Installationen</h3>
+<p>Rasterprovider: Um die Grib Dateien auslesen zu können benötigt der PI &quot;grib_get&quot;
+deshalb installiert man bei Onlinezugang auf dem PI am Terminal:</p>
+<pre><code class="language-bash">sudo apt-get update
+sudo apt-get install libeccodes-tools
+sudo apt-get install bzip2  # DWD
+sudo apt-get install python3-gdal  # Met Office UKV (NetCDF)
+</code></pre>
+<h3>Erwartete Signal-K-Plugins</h3>
+<p>Für SMHI-Vorhersagen in Signal K das Plugin „SMHI Weather Provider“ installieren und aktivieren.</p>
+<h3>OpenCPN-Konfiguration</h3>
+<p>Für den Direktimport von Routen aus OpenCPN ist das externe OpenCPN-Plugin <strong>Signal K Route Sender</strong> erforderlich.</p>
+<p><a href="https://github.com/SignalKuser/LTC_Ocpn_Route_Importer/releases/tag/v.1.1.44" target="_blank" rel="noopener noreferrer">GitHub-Release mit Signal K Route Sender</a></p>
+<p>Unter <strong>Assets</strong> das RAR-Archiv herunterladen und entpacken. Das zur OpenCPN-Installation passende Sender-Paket <code>SignalKRouteSender-*.tar.gz</code> in OpenCPN über <strong>Plugins → Plugin importieren</strong> installieren und aktivieren.</p>
+<p>Unter <strong>Optionen → Verbindungen</strong> die Signal-K-Verbindung einrichten und aktivieren. Falls der Server eine Anmeldung verlangt, den Signal-K-Token dort unter <strong>Erweitert → Auth Token</strong> eintragen. Der Sender verwendet diese Verbindung.</p>
+<h3>Opencpn Benutzung</h3>
+<p>In Ocpn eine Route zeichnen. mit der rechten Maus (Kontextmenü) auf einen Wegpunkt, Route und dort am besten unter Eigenschaften einen Namen geben.
+Danach unten unter Route &quot;an Signal K senden&quot;.
+Die GPX Route wird damit nach Signal übertragen und liegt anschliessend unter /signalk/v2/api/resources/routes
+auch andere Signal K Plugins legen dort ihre Routen ab, auch diese können mit LTC_Ocpn_Route_Importer verwendet werden, z.b. Freeboard-SK, Binnacle usw.</p>
+<h3>LTC_Ocpn_Route_Importer Benutzung</h3>
+<p>Auf Seite 1 unter <strong>Routenquelle</strong> zwischen <strong>Signal K</strong>, <strong>GPX (Win)</strong> und <strong>GPX (Pi)</strong> wählen. <strong>GPX (Win)</strong> öffnet die Windows-Dateiauswahl und erlaubt eine Mehrfachauswahl. Unter <strong>GPX (Pi)</strong> den Ordnerpfad eingeben, auf <strong>Ordner übernehmen</strong> klicken und die Datei aus der Liste wählen. Enthält eine Datei mehrere Routen, lassen sie sich separat auswählen. Die Wegpunkte erscheinen unten. Unter Provider einen der Wetteranbieter auswählen, dort gibt es unterschiedliche Anbieter. Manche bieten das Wetter für einen bestimmten Zeitpunkt
+nach Koordinaten an, Bei anderen werden automatisch Grib Dateien heruntergeladen, die entsprechenden Koordinaten der Wegpunkte der Grib Datei zugeordnet und so das Wetter ermittelt.</p>
+<h3>Wetter downloaden</h3>
+<p>das Wetter wird heruntergeladen, den Wegpunkten zeitlich zugeordnet und  direkt gespeichert. Auswahl über &quot;Gespeicherter Wetterlauf&quot;.</p>
+<h3>Gespeicherter Wetterlauf</h3>
+<p>Auswahl für mehrere Versionen vom gleichen oder anderen Providern. Kann dort gelöscht werden.
+Kann sinnvoll sein um verschiedene Provider bei einer Route zu vergleichen.</p>
+<h3>SOG - Planwert</h3>
+<p>Das ist der theoretische, angenommene Speed over Ground bei Boot ohne Fahrt (Hafenplanung).
+Nachdem man den Wind eingeschätzt hat kann man dort den anzunehmenden SOG eintragen.
+Das ist sozusagen die Vorstufe für die ETA- Berechnung.</p>
+<h3>ETA- Berechnung</h3>
+<h3>GPS,SOG,COG</h3>
+<p>Am besten aktivieren für die ETA. Position und tatsächliche Fahrt über Grund; enthält bereits Wind- und Strömungseinfluss.
+Wenn GPS, SOG und COG aktiv sind und die ETA auf GPS-Daten basiert, nimmt die App die gemessene SOG und berechnet mit COG,
+wie viel davon in Richtung des nächsten Wegpunkts wirkt. Für spätere Abschnitte verwendet die App die passende Geschwindigkeitsquelle oder den SOG-Planwert.</p>
+<p>Die Strömung an aktueller Position steckt bereits in der gemessenen Fahrt über Grund.
+Bei ausgeschaltetem Strömungsvektor berechnet die App keine zusätzliche Strömungsvorhersage für spätere Abschnitte.
+Fehlt eine brauchbare GPS-SOG und greift keine andere Geschwindigkeitsquelle, verwendet sie den SOG-Planwert.
+Für eine Schätzung der Strömung aus Bordmessungen werden beide Bewegungen als Vektoren gebraucht:</p>
+<ul>
+<li>SOG und COG geben an, wie schnell und in welche Richtung sich das Boot über Grund bewegt.</li>
+<li>STW und die tatsächliche Bewegungsrichtung durchs Wasser geben an, wie sich das Boot relativ zum Wasser bewegt.
+Heading kann dafür als Näherung dienen. Bei seitlicher Windabdrift wird die Schätzung ungenauer.
+Die Differenz dieser Vektoren ergibt die geschätzte Strömung. STW allein reicht dafür nicht!</li>
+</ul>
+<h3>Strömungsvektor</h3>
+<p>Die App zieht HARMONIC und HARMONIC.IDX für die ETA heran, wenn „Strömungsvektor“ aktiviert ist, passende Daten verfügbar sind und die Geschwindigkeit für den Abschnitt aus Motor-SOG, LTC-Polare, STW oder dem SOG-Planwert kommt.
+Passende Daten: Die App schaut in den IDX Dateien ob die Wegpunktkoordinaten passen. Am besten einen Ordner mit allen IDX Dateien anlegen, die App sucht rekursiv die passenden IDX automatisch heraus und zeigt sie auch pro Wegpunkt an. So können auch unterschiedliche IDX Dateien für eine Route benutzt werden.
+IDX Dateien für Europa, Nordsee, Deutsche Bucht und Ostsee usw: <a href="https://github.com/SignalKuser?tab=repositories">https://github.com/SignalKuser?tab=repositories</a></p>
+<p>Für jeden solchen Abschnitt fragt sie die Strömung am Zielwegpunkt zur vorläufig geschätzten Ankunftszeit ab.
+Daraus berechnet sie, wie viel Strömung längs und quer zum Abschnitt wirkt, und korrigiert damit die ETA. Eine STW-Messung ist dafür optional.
+Basiert ein Abschnitt auf gemessener GPS-SOG, lässt die App die IDX-Korrektur für diesen Abschnitt aus.
+Beim Laden einer Route kann sie trotzdem schon prüfen und anzeigen, ob passende Strömungsstationen verfügbar sind. Diese Prüfung allein verändert die ETA nicht.</p>
+<h3>STW – Speed Through Water</h3>
+<p>Wenn GPS/SOG fehlt, kann STW als Geschwindigkeitsbasis für die ETA dienen;
+mit Strömungsvektor wird die Fahrt über Grund prognostiziert. Ohne GPS-Position bleibt der tatsächliche Routenfortschritt unbekannt.</p>
+<h3>AWS – Apparent Wind Speed</h3>
+<p>Für die ETA wird der aktuelle Signal-K-Wind für die künftigen Streckenabschnitte angenommen. Fehlt wahrer Wind,
+leitet die App ihn aus AWS/AWA sowie Bootsgeschwindigkeit und Kurs ab. Die LTC-Polare wird nur gelesen, nicht verändert.</p>
+<h3>Heading True verwenden</h3>
+<p>Wenn aktiviert, richtet die App AWS/AWA mit &quot;navigation.headingTrue&quot; aus. Sonst nutzt sie COG als Näherung.
+Vorhandene STW wird für die Windberechnung aus AWS/AWA genutzt, sofern verfügbar. &quot;STW – Speed Through Water steuert nur,
+ob STW zusätzlich als ETA-Geschwindigkeitsbasis dient.
+Gibt es keine  Headingquelle in Signal K wird COG als Näherung genutzt.</p>
+<h3>Maschine an/aus</h3>
+<p>Sobald  „Maschine an/aus“ aktiviert ist,  verwendet die App Motor-SOG als Basis für alle verbleibenden Routenabschnitte.
+Der Wert hat dann Vorrang vor GPS-SOG, LTC-Polare, STW und dem SOG-Planwert.
+Ist auch der Strömungsvektor aktiv und sind passende IDX-Dateien verfügbar, korrigiert die App den Motor-SOG für den jeweiligen Abschnitt.</p>
+<h3>Polardaten</h3>
+<p>Polare bestimmen die geschätzte Geschwindigkeit für jeden Routenabschnitt, wenn sie aktiviert und eine passende Datei ausgewählt ist. Die App nimmt die erwartete wahre Windstärke (TWS) und den Winkel des Winds zum Abschnitt (TWA). Daraus schätzt sie, wie schnell das Boot in Richtung des nächsten Wegpunkts vorankommt. Bei Gegenwind kann die Berechnung auch das Kreuzen berücksichtigen.
+Beispiel: Ein Abschnitt von 20 sm dauert mit einem SOG-Planwert von 5 kn etwa 4 Stunden. Ergibt die Polare wegen Gegenwind nur 4 kn Fortschritt zum Ziel,
+rechnet die App mit 5 Stunden. Dadurch verschieben sich auch die ETAs der folgenden Wegpunkte und gegebenenfalls die dazu angezeigten Vorhersagezeiten.</p>
+<p>Motor-SOG hat Vorrang, wenn die Maschine aktiviert ist. Im Segelmodus hat eine nutzbare Polare Vorrang vor GPS-SOG, STW und dem SOG-Planwert.
+Wie gut die ETA passt, hängt also auch davon ab, wie gut die gewählte Polare das Boot abbildet.</p>
+<h3>Wegpunktradius</h3>
+<p>Der Wegpunkt gilt als erreicht bei eingestelltem Radius.</p>
+<h3>Entfernung und Kurs zum nächsten Wegpunkt</h3>
+<p>Es ist möglich, dass die aktuelle Position sich gar nicht in der Nähe der Route befindet.
+Hier wird Entfernung und Kurswinkel zum nächstgelegenen Wegpunkt der Route angezeigt.
+Erreicht man diesen Wegpunkt gelten alle Wegpunkte davor als abgefahren.</p>
+<h3>Windgewichtung</h3>
+<p>Der angezeigte Wind kommt vom Provider und ist eine Vorhersage. Der selbst gemessene Wind ist viel genauer und wird deshalb berücksichtigt. Desto weiter man sich räumlich und zeitlich
+entfernt, nimmt der Bootswind (Windvektor = Windstärke und Richtung) mit der Gewichtung ab und spielt kaum eine Rolle. Nähert man sich einem Wegpunkt nimmt er wieder zu.</p>
+<h3>Reichweite des Bootswindes</h3>
+<p>Der Schieber regelt die Windgewichtung in 15 Stufen.</p>
+<p>Der Schieber bestimmt, wie weit der aktuell am Boot ermittelte Wind in die ETA-Berechnung einfließt. Direkt an der aktuellen Position zählt er zu 100 %. Je weiter ein Wegpunkt entlang der Route vorausliegt und je länger die geschätzte Fahrt dorthin dauert, desto stärker zählt die Vorhersage des gewählten Wetteranbieters.
+Die Entfernung berücksichtigt, dass der Wind weiter voraus anders sein kann. Die Fahrzeit bis zum Wegpunkt berücksichtigt, dass sich der Wind bis zur Ankunft ändern kann, auch wenn der Wegpunkt nah liegt. Für jeden Wegpunkt zählt die Grenze, die relativ gesehen weiter ausgeschöpft ist. Sobald eine der beiden Grenzen erreicht ist, fällt der Bootsanteil auf 0 %. Bei verfügbarer und aktivierter Anbietervorhersage gilt dann 100 % Providerwind. Stufe 3 ist der Standard.<br />
+0,5 nm oder 10 min<br />
+1 nm oder 20 min<br />
+2 nm oder 30 min<br />
+3 nm oder 45 min<br />
+5 nm oder 60 min</p>
+<p>Von Stufe 6 bis 15 steigt die Reichweite pro Stufe um 2 nm und 24 Minuten. Stufe 15 erreicht 25 nm oder 5 Stunden.</p>
+<p>Wenn die gemischte Windstärke unter einem Drittel der Summe der beiden gewichteten Windstärken liegt, übernimmt die höher gewichtete Quelle für diesen Wegpunkt mit ihrer vollen Windstärke und Richtung. Bei gleichen Anteilen gilt der Bordwind.</p>
+<h3>Signal-K-Pfade prüfen</h3>
+<p>Im Signal-K-Datenbrowser unter Data → Browser nach dem jeweiligen Pfad suchen. Für die eigenen Bootsdaten muss in der Spalte Context self stehen.
+In den Spalten Value, Timestamp und Source lässt sich prüfen, welcher Wert ankommt, wann er zuletzt aktualisiert wurde und welche Quelle ihn liefert.</p>
+<p><strong>navigation.position</strong>           GPS-Position für Routenfortschritt, Entfernung und Kurs zum nächsten Wegpunkt<br />
+<strong>navigation.speedOverGround</strong>	Fahrt über Grund    (SOG) für die ETA und als Ersatz für STW bei der Bordwindberechnung<br />
+<strong>navigation.courseOverGroundTrue</strong>	   Kurs über Grund (COG) für die ETA und als Näherung für die Bootsausrichtung, wenn kein Heading verwendet wird<br />
+<strong>navigation.speedThroughWater</strong>	   Fahrt durchs Wasser (STW) von der Logge für die ETA und die Bordwindberechnung<br />
+<strong>navigation.headingTrue</strong>	           Rechtweisende Ausrichtung des Bugs für die Bordwindberechnung, wenn „Heading True verwenden“ aktiviert ist<br />
+<strong>environment.wind.speedApparent</strong>	   Scheinbare Windgeschwindigkeit (AWS)<br />
+<strong>environment.wind.angleApparent</strong>	   Scheinbarer Windwinkel relativ zum Bug (AWA)<br />
+<strong>environment.wind.speedTrue</strong>    	Wahre Windgeschwindigkeit (TWS)<br />
+<strong>environment.wind.directionTrue</strong>	   Wahre Windrichtung bezogen auf rechtweisend Nord, aus der der Wind kommt</p>
+<p>Für den Bordwind genügt einer von zwei Datensätzen. Die App verwendet entweder TWS und wahre Windrichtung aus derselben Quelle oder berechnet
+den Bordwind aus AWS, AWA, Bootsgeschwindigkeit und einer Kursreferenz. Bei der Berechnung bevorzugt sie STW und verwendet bei Bedarf SOG.
+Als Kursreferenz verwendet sie bei aktivierter Option das verfügbare Heading, sonst COG. Werte im Kontext smhi sind Providerdaten. Die Bordwindberechnung liest den Kontext self.</p>
+<h3>Signal-K-API-Endpunkte</h3>
+<p>Diese Endpunkte lassen sich im Browser öffnen, indem der jeweilige Pfad an die Adresse des Signal-K-Servers angehängt wird.</p>
+<p><strong>/signalk/v1/api/vessels/self/navigation/speedThroughWater</strong>      Beispiel zur direkten Prüfung eines Bordwerts. Die Antwort enthält value in m/s sowie Quelle und Zeitstempel, sofern verfügbar.<br />
+<strong>/signalk/v2/api/vessels/self/navigation/course</strong>	               Optionale aktive Navigation. Wenn die aktive Route zur ausgewählten Route passt, kann die App daraus den nächsten Wegpunkt und die Routenrichtung übernehmen.<br />
+<strong>/signalk/v2/api/resources/routes</strong>	                       Liste der in Signal K gespeicherten Routen. Beim Löschen spricht die App die einzelne Route unter /signalk/v2/api/resources/routes/&lt;Routen-ID&gt; an.<br />
+<strong>/signalk/v2/api/weather/_providers</strong>	                       Liste der in Signal K registrierten Wetteranbieter, etwa SMHI.<br />
+<strong>/signalk/v2/api/weather/forecasts/point</strong>	                       Punktvorhersage eines in Signal K registrierten Wetteranbieters. Die App übergibt Anbieter und Wegpunktkoordinaten.</p>
+<h3>qtVlm-Direktexport</h3>
+<p>Auf Seite 2 den <strong>qtVlm-Empfang aktivieren</strong>. In qtVlm <strong>Datenaustauscher → Senden</strong> öffnen, den Datentyp und das gewünschte Objekt auswählen und auf <strong>Senden</strong> klicken. Der Empfänger auf dem Raspberry Pi findet den qtVlm-Sender automatisch. Importierte Daten und Fehlermeldungen werden auf Seite 2 angezeigt.</p>
+<p>Beide Geräte müssen im selben lokalen Netz sein, etwa im WLAN des Boots-Pi. Die Firewall muss die Sendersuche über UDP-Port 5555 und die Verbindung vom Pi zum qtVlm-Gerät über TCP-Port 5555 zulassen.</p>
+<ul>
+<li>Route erscheint unter der Routenquelle Signal K.</li>
+<li>Strecke erscheint als Route unter der Routenquelle Signal K.</li>
+<li>POI wird als Signal-K-Wegpunkt gespeichert.</li>
+<li>POIs-Archiv wird als Gruppe von Signal-K-Wegpunkten mit Archivnamen gespeichert.</li>
+<li>Barriere-Sätze stehen als GeoJSON-Dateien auf Seite 2 bereit.</li>
+<li>Archivspuren stehen als GPX-Dateien unter <strong>GPX (Pi)</strong> bereit.</li>
+<li>GRIB-Dateien erscheinen in der Auswahl unter „GRIB-Datei laden“.</li>
+</ul>
+<p>Der Import von qtVlm-Routen und POIs benötigt Python 3 auf dem Pi. Für GPS und Wind unter <strong>NMEA-Verbindungen → Ankommend → Netzwerkquellen → TCP</strong> die Pi-IP und Port <strong>10110</strong> eintragen. Beim Boots-Pi ist die Standard-IP <code>10.42.0.1</code>. Signal K muss die gewünschten NMEA-0183-Sätze ausgeben.</p>
+<h3>Eigene GRIB-Datei</h3>
+<ol>
+<li>Auf Seite 2 den <strong>qtVlm-Empfang aktivieren</strong>. In qtVlm die GRIB-Datei senden. Auf Seite 2 wird die empfangene Datei angezeigt.</li>
+<li>Auf Seite 1 im Provider-Menü <strong>Eigene GRIB-Datei</strong> wählen und unter <strong>Gespeicherter Wetterlauf</strong> auf <strong>GRIB-Datei laden</strong> klicken.</li>
+<li>Unter <strong>Gespeicherte GRIB-Dateien</strong> die Datei auswählen und auf <strong>Datei übernehmen</strong> klicken.</li>
+<li>Unter <strong>Zusatzdaten abrufen</strong> bei Bedarf die gewünschten Felder auswählen. Dann rechts auf <strong>GRIB auswerten</strong> klicken.</li>
+<li>Unter <strong>Zusatzspalten</strong> die eingelesenen Zusatzwerte in der Tabelle einblenden.</li>
+</ol>
+<p>Wer eine eigene Datei hat, kann bei Schritt 2 beginnen. Im Dialog lässt sich eine Datei vom eigenen Gerät hochladen, ein absoluter Pfad auf dem Pi eingeben oder ein direkter HTTP(S)-Downloadlink verwenden. Mit einem Namen lässt sich der Link als Quelle speichern.</p>
+<p>Auf Seite 2 stehen die gespeicherten GRIB-Dateien unter <strong>qtVlm-Direktimport</strong> mit Importdatum und Uhrzeit. Zum Entfernen rechts neben der Datei auf <strong>Löschen</strong> klicken und bestätigen.</p>
+<p>Die Datei und der daraus berechnete Wetterlauf stehen offline zur Verfügung. Für die GRIB-Auswertung muss auf dem Pi <code>libeccodes-tools</code> installiert sein.</p>
+<p>Handbreit/C</p>
+</article>

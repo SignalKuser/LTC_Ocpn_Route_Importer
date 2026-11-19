@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#073b4c">
+    <title>LTC_Ocpn_Route_Importer v.1.1.47 · Signal K</title>
+    <link rel="icon" href="assets/icons/route-sender-toolbar.png" type="image/png">
+    <link rel="stylesheet" href="app.css?v=1.1.47">
+    <script src="app.js?v=1.1.47" defer></script>
+  </head>
+  <body>
+    <header class="masthead">
+      <a class="brand" href="#top" aria-label="Route Weather Startseite">
+        <img src="assets/icons/route-sender-toolbar.png" alt="" width="42" height="42">
+        <span><strong>LTC_Ocpn_Route_Importer</strong></span>
+      </a>
+      <div class="mast-tools">
+        <label class="language-picker"><span class="sr-only" data-i18n="Language">Sprache</span><select id="language-select" aria-label="Sprache"><option value="de">DE</option><option value="nl">NL</option><option value="fr">FR</option><option value="gb">GB</option></select></label>
+        <button id="open-help" type="button" class="mast-help" aria-haspopup="dialog" data-i18n="Help">Hilfe</button>
+        <div class="mast-network">
+          <div class="mast-meta"><span class="live-dot" aria-hidden="true"></span><span id="connection-status">Prüfe Internetverbindung …</span></div>
+          <div class="weather-progress" id="weather-progress" hidden>
+            <span id="weather-progress-text" role="status"></span>
+            <div class="weather-progress-meter">
+              <progress id="weather-progress-bar" aria-labelledby="weather-progress-text"></progress>
+              <span id="weather-download-size" hidden></span>
+            </div>
+          </div>
+        </div>
+        <span class="version-tag" id="app-version">v1.1.47</span>
+      </div>
+    </header>
+
+    <main id="top">
+      <nav class="page-pager" aria-label="Seitennavigation">
+        <button type="button" class="small-button" data-page-action="previous" disabled aria-label="Vorherige Seite" data-i18n="Page previous">← Zurück</button>
+        <span id="page-indicator">Seite 1 von 2</span>
+        <button type="button" class="small-button" data-page-action="next" aria-label="Nächste Seite" data-i18n="Page next">Weiter →</button>
+      </nav>
+      <div id="page-one">
+      <section class="intro" aria-label="Wetter entlang der Route">
+        <h1 data-i18n="Weather along the route">Wetter entlang der Route</h1>
+      </section>
+
+      <section class="controls" aria-label="Routen- und Prognoseeinstellungen">
+        <div class="route-picker">
+          <label for="route-select" data-i18n="ROUTE">ROUTE</label>
+          <div class="route-select-row">
+            <select id="route-select" disabled>
+              <option value="" data-i18n="Loading routes …">Routen werden geladen …</option>
+            </select>
+            <button id="refresh-routes-button" class="small-button route-refresh-button" type="button" disabled title="Routen aus Signal K neu laden" aria-label="Routen aus Signal K neu laden" data-i18n-title="Reload routes" data-i18n-aria-label="Reload routes">↻</button>
+            <button id="delete-route-button" class="small-button delete-button" type="button" disabled data-i18n="Delete">Löschen</button>
+          </div>
+          <div class="gpx-controls">
+            <label for="route-source" class="route-source" data-i18n="Route source">Routenquelle</label>
+            <select id="route-source"><option value="signalk">Signal K</option><option value="gpx-win">GPX (Win)</option><option value="gpx-pi">GPX (Pi)</option></select>
+            <button id="choose-gpx" type="button" class="small-button" data-i18n="Choose GPX">GPX-Datei wählen</button>
+            <input id="gpx-file" type="file" accept=".gpx,application/gpx+xml" multiple hidden>
+            <div id="gpx-files" class="gpx-files" role="group" data-i18n-aria-label="GPX files" aria-label="GPX-Dateien"></div>
+            <span id="gpx-status" role="status"></span>
+            <label id="gpx-route-picker" hidden><span data-i18n="GPX route">GPX-Route</span><select id="gpx-route"></select></label>
+          </div>
+        </div>
+        <div class="provider-setting">
+          <div class="provider-setting-heading">
+            <span data-i18n="WEATHER PROVIDER">PROVIDER</span>
+            <label class="raster-filter"><input id="hide-raster-providers" type="checkbox"> <span data-i18n="Hide raster providers">Rasteranbieter ausblenden</span></label>
+          </div>
+          <select id="weather-provider-select" disabled>
+            <option value="" data-i18n="Loading providers …">Anbieter werden geladen …</option>
+          </select>
+          <details id="download-extras" class="extra-picker">
+            <summary data-i18n="Additional forecast data">Zusatzdaten abrufen</summary>
+            <div id="download-extra-options" class="extra-options"></div>
+          </details>
+        </div>
+        <div class="snapshot-setting">
+          <span id="snapshot-heading" class="snapshot-setting-heading">
+            <span data-i18n="SAVED WEATHER RUN">GESPEICHERTER WETTERLAUF</span>
+            <small id="snapshot-page" class="snapshot-page">Wetterlauf 0 von 0</small>
+          </span>
+          <span class="snapshot-row"><select id="snapshot-select" aria-labelledby="snapshot-heading" disabled><option value="">Noch kein gespeicherter Lauf</option></select><button id="delete-snapshot-button" class="small-button delete-button" type="button" disabled data-i18n="Delete">Löschen</button></span>
+          <div class="grib-control">
+            <button id="open-grib" class="small-button" type="button" data-i18n="Load GRIB file" disabled>GRIB-Datei laden</button>
+            <small id="active-grib" hidden></small>
+          </div>
+        </div>
+        <div class="speed-setting">
+          <label for="speed-input" data-i18n="Planned SOG">SOG - Planwert</label>
+          <span class="number-control"><input id="speed-input" type="number" min="0.5" max="40" step="0.5" value="5"><b>kn</b></span>
+          <button id="refresh-button" class="refresh-button" type="button" disabled><span aria-hidden="true">↻</span><span id="weather-action" data-i18n="Fetch weather">Wetter downloaden</span></button>
+        </div>
+      </section>
+
+      <details class="eta-panel">
+        <summary><span data-i18n="ETA CALCULATION">ETA-BERECHNUNG</span><strong data-i18n="Choose optional data sources">Optionale Datenquellen auswählen</strong><i aria-hidden="true"></i></summary>
+        <div class="eta-options">
+          <label class="source-option">
+            <input id="source-gps" type="checkbox" checked>
+            <span><strong data-i18n="GPS, SOG and COG">GPS, SOG und COG</strong><small data-i18n="GPS description">Position und tatsächliche Fahrt über Grund; enthält bereits Wind- und Strömungseinfluss.</small></span>
+          </label>
+          <label class="source-option">
+            <input id="source-engine" type="checkbox">
+            <span><strong data-i18n="Engine on/off">Maschine an/aus</strong><small data-i18n="Motor description">Bei aktivierter Maschine wird die eingestellte Motor-SOG für die ETA verwendet.</small></span>
+          </label>
+          <label class="source-option" id="stw-option">
+            <input id="source-stw" type="checkbox">
+            <span><strong data-i18n="STW through water">STW – Speed Through Water</strong><small data-i18n="STW description">Wenn GPS/SOG fehlt, kann STW als Geschwindigkeitsbasis für die ETA dienen; mit Strömungsvektor wird die Fahrt über Grund prognostiziert. Ohne GPS-Position bleibt der tatsächliche Routenfortschritt unbekannt.</small></span>
+          </label>
+          <label class="source-option" id="current-option">
+            <input id="source-current" type="checkbox" disabled>
+            <span><strong data-i18n="Current vector">Strömungsvektor</strong><small id="current-status" data-i18n="Checking current source …">Prüfe eure LTC-Strömungsdaten …</small></span>
+          </label>
+          <label class="source-option" id="polar-option">
+            <input id="source-polar" type="checkbox" disabled>
+            <span><strong data-i18n="LTC boat polar">Polardaten</strong><small id="polar-status" data-i18n="Select LTC polar">LTC-Polardatei auswählen, um Windwinkel und Fahrt durchs Wasser zu berechnen.</small></span>
+          </label>
+          <label class="source-option">
+            <input id="source-forecast-wind" type="checkbox" checked>
+            <span><strong data-i18n="SMHI forecast wind">SMHI-Vorhersagewind</strong><small data-i18n="Forecast wind description">SMHI-Wind für die LTC-Polar und ETA entlang der Route verwenden.</small></span>
+          </label>
+          <label class="source-option" id="own-wind-option">
+            <input id="source-own-wind" type="checkbox" disabled>
+            <span><strong data-i18n="AWS label">AWS – Apparent Wind Speed</strong><small data-i18n="Onboard wind ETA description">Für die ETA wird der aktuelle Signal-K-Wind für die künftigen Streckenabschnitte angenommen. Fehlt wahrer Wind, leitet die App ihn aus AWS/AWA sowie Bootsgeschwindigkeit und Kurs ab. Die LTC-Polare wird nur gelesen, nicht verändert.</small><small id="own-wind-status" data-i18n="Checking onboard wind …">Prüfe eigene Windmessung …</small></span>
+          </label>
+          <label class="source-option">
+            <input id="source-heading" type="checkbox" disabled>
+            <span><strong data-i18n="Use true heading">Heading True verwenden</strong><small data-i18n="Heading description">Wenn aktiviert, richtet die App AWS/AWA mit navigation.headingTrue aus. Sonst nutzt sie COG als Näherung. Vorhandene STW wird unabhängig von der STW-ETA-Option verwendet.</small><small id="heading-status" data-i18n="Checking heading …">Prüfe Heading-Pfad …</small></span>
+          </label>
+          <div class="eta-settings">
+            <label class="eta-field"><span>Motor-SOG</span><span class="number-control"><input id="motor-speed-input" type="number" min="0.5" max="40" step="0.5" value="5" disabled><b>kn</b></span></label>
+            <label class="eta-field polar-path"><span data-i18n="LTC POLAR DATA DIRECTORY">LTC-POLARDATEN-ORDNER AUF DEM SIGNAL-K-PI</span><input id="polar-directory" type="text" placeholder="Absoluter Pfad auf diesem Pi" data-i18n-placeholder="Polar directory placeholder" autocomplete="off"><small data-i18n="Polar directory help">Der Pfad ist pro Pi einstellbar. LTC speichert eigene Polaren als JSON-Dateien. Beispiel: /home/pi/LTC/Polardata/speech2polardata</small></label>
+            <div class="eta-field eta-action"><span data-i18n="DIRECTORY">ORDNER</span><button id="save-polar-directory" type="button" class="small-button" data-i18n="Check and save">Ordner prüfen und übernehmen</button></div>
+            <label class="eta-field polar-picker"><span data-i18n="SAVED LTC POLARS">GESPEICHERTE LTC-POLARE</span><select id="polar-select" disabled><option value="" data-i18n="Configure polar directory first">Zuerst Polardaten-Ordner konfigurieren</option></select></label>
+            <label class="eta-field current-path"><span data-i18n="CURRENT DATA DIRECTORY">LTC-STRÖMUNGSDATEN AUF DEM SIGNAL-K-PI</span><input id="current-directory" type="text" placeholder="Absoluter Pfad zum Stammordner mit Gebietsordnern" data-i18n-placeholder="Current directory placeholder" autocomplete="off"><small id="current-datasets-status" data-i18n="Current directory help">Ordner mit regionalen HARMONIC/IDX-Paaren. Die App vergleicht deren Stationsabdeckung mit der Route.</small></label>
+            <div class="eta-field current-directory-action"><span data-i18n="Check current dataset">Strömungsdaten prüfen</span><button id="save-current-directory" type="button" class="small-button" data-i18n="Check current data">Ordner prüfen</button></div>
+          </div>
+        </div>
+      </details>
+
+      <section class="route-summary" aria-live="polite">
+        <div class="route-summary-route">
+          <div>
+            <h2 id="route-title">Noch keine Route ausgewählt</h2>
+            <p id="route-time" class="route-time" hidden></p>
+          </div>
+          <div class="route-summary-controls">
+            <div class="waypoint-radius">
+              <label for="waypoint-radius" data-i18n="Waypoint radius">Wegpunktradius</label>
+              <output id="waypoint-radius-value" for="waypoint-radius">100 m</output>
+              <input id="waypoint-radius" type="range" min="0" max="2000" step="1" value="100">
+              <button id="reset-route-progress" type="button" class="small-button" data-i18n="Reset route progress" disabled>Fortschritt zurücksetzen</button>
+            </div>
+            <div class="next-waypoint">
+              <span data-i18n="Distance and bearing to next waypoint">Entfernung und Kurs zum nächsten Wegpunkt</span>
+              <strong id="next-waypoint-values">—</strong>
+              <span id="next-waypoint-target"></span>
+            </div>
+            <div class="wind-reach">
+              <label for="wind-reach" data-i18n="Onboard wind reach">Reichweite des Bootswindes</label>
+              <input id="wind-reach" type="range" min="1" max="15" step="1" value="3" list="wind-reach-steps" aria-describedby="wind-reach-limit">
+              <datalist id="wind-reach-steps">
+                <option value="1"></option>
+                <option value="2"></option>
+                <option value="3"></option>
+                <option value="4"></option>
+                <option value="5"></option>
+                <option value="6"></option>
+                <option value="7"></option>
+                <option value="8"></option>
+                <option value="9"></option>
+                <option value="10"></option>
+                <option value="11"></option>
+                <option value="12"></option>
+                <option value="13"></option>
+                <option value="14"></option>
+                <option value="15"></option>
+              </datalist>
+              <div class="wind-reach-scale" aria-hidden="true">
+                <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span>
+              </div>
+              <small id="wind-reach-limit"></small>
+            </div>
+            <div class="table-options-panel">
+              <details id="table-extras" class="extra-picker">
+                <summary data-i18n="Additional table columns">Zusatzspalten</summary>
+                <div id="table-extra-options" class="extra-options"></div>
+              </details>
+            </div>
+          </div>
+        </div>
+        <div class="summary-facts">
+          <div><strong id="waypoint-count">—</strong><span data-i18n="Waypoints">Wegpunkte</span></div>
+          <div><strong id="route-total-distance">—</strong><span data-i18n="Route distance">Routendistanz</span><span id="route-distance-endpoints"></span></div>
+          <div><strong id="route-distance">—</strong><span data-i18n="Distance remaining">Restdistanz</span></div>
+          <div><strong id="top-route-duration">—</strong><span data-i18n="Total route time">Gesamtzeit der Route</span></div>
+          <div><strong id="top-route-average-speed">—</strong><span data-i18n="Average speed">Durchschnittsknoten</span></div>
+          <div><strong id="forecast-updated">—</strong><span data-i18n="Weather loaded">Wetter geladen</span></div>
+        </div>
+      </section>
+
+      <section class="table-wrap" tabindex="0" aria-label="Wettervorhersage entlang der Route" data-i18n-aria-label="Forecast along route">
+        <table>
+          <colgroup>
+            <col class="col-waypoint"><col class="col-eta"><col class="col-distance"><col class="col-course"><col class="col-knots"><col class="col-wind-vector">
+            <col class="col-wind-weight"><col class="col-wind"><col class="col-temperature"><col class="col-pressure">
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col" data-i18n="WAYPOINT">WEGPUNKT</th>
+              <th scope="col" data-i18n="ARRIVAL">ANKUNFT</th>
+              <th scope="col" data-i18n="DISTANCE" title="Entfernung bis zum nächsten Wegpunkt" data-i18n-title="Distance to next waypoint">ENTFERNUNG</th>
+              <th scope="col" data-i18n="COURSE" title="Kurs bis zum nächsten Wegpunkt" data-i18n-title="Course to next waypoint">KURS</th>
+              <th scope="col" data-i18n="KNOTS" data-i18n-title="Calculated SOG to next waypoint">KN</th>
+              <th scope="col" data-i18n="TWS / TWA" data-i18n-title="Calculated wind speed and angle">TWS / TWA</th>
+              <th scope="col" data-i18n="WIND WEIGHT" data-i18n-title="Wind weighting tooltip">WINDGEWICHTUNG</th>
+              <th scope="col" data-i18n="WIND" data-i18n-title="Provider wind tooltip">WIND</th>
+              <th scope="col" data-i18n="TEMPERATURE" data-i18n-title="Temperature tooltip">TEMPERATUR</th>
+              <th scope="col" data-i18n="AIR PRESSURE" data-i18n-title="Air pressure tooltip">LUFTDRUCK</th>
+            </tr>
+          </thead>
+          <tbody id="forecast-rows">
+            <tr class="empty-row"><td colspan="10" data-i18n="Select a route to calculate forecast">Route aus der Liste auswählen, um die Vorhersage zu berechnen.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="route-totals" aria-live="polite">
+        <div><span data-i18n="Total route time">GESAMTZEIT DER ROUTE</span><strong id="route-duration">—</strong></div>
+        <div><span data-i18n="Average speed">DURCHSCHNITTSKNOTEN</span><strong id="route-average-speed">—</strong></div>
+      </section>
+
+      <aside class="snapshot-details" aria-live="polite">
+        <span class="details-label" data-i18n="Saved run details">WETTERLAUF UND SPEICHERUNG</span>
+        <p id="snapshot-meta">Noch kein gespeicherter Wetterlauf. Nach dem Abruf wird die Tabelle lokal auf diesem Signal-K-Pi abgelegt.</p>
+      </aside>
+
+      <footer class="footnote">
+        <p id="status-message" data-i18n="Status help">GPS/SOG/COG aktualisieren unterwegs den Fortschritt. Motor, STW, LTC-Polare und Strömungsvektor sind einzeln zuschaltbar.</p>
+        <p data-i18n="Forecast source">Prognose: SMHI über Signal K Weather API · Alle Zeiten Ortszeit des PCs</p>
+      </footer>
+      </div>
+
+      <section id="page-two" class="provider-page" hidden>
+        <div class="intro">
+          <p class="eyebrow">SIGNAL K · WETTERDIENSTE</p>
+          <h1 data-i18n="Provider page title">Wetteranbieter und Zugang</h1>
+          <p data-i18n="Provider page intro">Offizielle Anbieter-Seiten, Zugangsvoraussetzungen und gespeicherte Schlüssel.</p>
+        </div>
+        <p id="provider-status-message" class="provider-status-message" aria-live="polite"></p>
+        <div id="provider-cards" class="provider-cards"></div>
+        <section class="raster-storage" aria-labelledby="raster-storage-title">
+          <div class="raster-storage-header">
+            <div>
+              <p class="eyebrow">OFFLINE-NUTZUNG</p>
+              <h2 id="raster-storage-title" data-i18n="Raster data title">Gespeicherte Rasterdaten</h2>
+              <p id="raster-cache-status" aria-live="polite">Noch keine Roh-Rasterdateien gespeichert. DMI-Wetterläufe werden separat offline abgelegt.</p>
+              <code id="raster-cache-path"></code>
+            </div>
+            <button id="delete-raster-cache" class="small-button delete-button" type="button" disabled data-i18n="Delete all raster files">Alle Rasterdateien löschen</button>
+          </div>
+          <ul id="raster-cache-files" class="raster-cache-files" aria-labelledby="raster-storage-title" hidden></ul>
+        </section>
+        <p class="provider-note" data-i18n="Raster storage explanation">GRIB-Anbieter speichern heruntergeladene Raster in diesem Ordner. DMI fragt Rasterwerte direkt über seine API ab.</p>
+        <section class="raster-storage" aria-labelledby="qtvlm-title">
+          <h2 id="qtvlm-title" data-i18n="qtVlm direct import">qtVlm-Direktimport</h2>
+          <label><input id="qtvlm-enable" type="checkbox" disabled> <span data-i18n="Enable qtVlm receiver">qtVlm-Empfang aktivieren</span></label>
+          <p id="qtvlm-status" role="status"></p>
+          <ul id="qtvlm-grib-files" class="raster-cache-files" aria-label="Gespeicherte GRIB-Dateien" data-i18n-aria-label="Saved GRIB files"></ul>
+          <ul id="qtvlm-history" class="raster-cache-files"></ul>
+          <ul id="qtvlm-barriers" class="raster-cache-files"></ul>
+        </section>
+      </section>
+
+      <nav class="page-pager page-pager-bottom" aria-label="Seitennavigation">
+        <button type="button" class="small-button" data-page-action="previous" disabled aria-label="Vorherige Seite" data-i18n="Page previous">← Zurück</button>
+        <span class="page-indicator-bottom">Seite 1 von 2</span>
+        <button type="button" class="small-button" data-page-action="next" aria-label="Nächste Seite" data-i18n="Page next">Weiter →</button>
+      </nav>
+    </main>
+    <dialog id="gpx-pi-dialog" aria-labelledby="gpx-library-title">
+      <header class="help-header">
+        <h2 id="gpx-library-title">GPX (Pi)</h2>
+        <form method="dialog"><button class="small-button" data-i18n="Close help">Schließen</button></form>
+      </header>
+      <form id="gpx-directory-form" class="gpx-directory-form">
+        <label for="gpx-directory" data-i18n="GPX Pi directory">GPX-Ordner auf dem Signal-K-Pi</label>
+        <input id="gpx-directory" type="text" autocomplete="off" aria-describedby="gpx-directory-example">
+        <small id="gpx-directory-example"><span data-i18n="Example path">Beispielpfad</span>: <code>/home/pi/LTC/GPX</code></small>
+        <button type="submit" class="small-button" data-i18n="Save GPX directory">Ordner übernehmen</button>
+        <button id="reload-gpx-library" type="button" class="small-button" data-i18n="Reload GPX files">Dateiliste aktualisieren</button>
+      </form>
+      <p id="gpx-library-status" role="status"></p>
+      <ul id="gpx-library-files" class="raster-cache-files"></ul>
+    </dialog>
+    <dialog id="grib-dialog" aria-labelledby="grib-title">
+      <header class="help-header">
+        <h2 id="grib-title" data-i18n="Load GRIB file">GRIB-Datei laden</h2>
+        <form method="dialog"><button class="small-button" data-i18n="Close help">Schließen</button></form>
+      </header>
+      <form id="grib-existing-form" class="grib-form">
+        <label for="grib-existing" data-i18n="Saved GRIB files">Gespeicherte GRIB-Dateien</label>
+        <select id="grib-existing"></select>
+        <button class="small-button" data-i18n="Use GRIB file">Datei übernehmen</button>
+      </form>
+      <div class="grib-form">
+        <input id="grib-upload" type="file" accept=".grb,.grb2,.grib,.grib2" hidden>
+        <button id="grib-browse" type="button" class="small-button" data-i18n="Choose GRIB file">GRIB-Datei auswählen</button>
+      </div>
+      <form id="grib-path-form" class="grib-form">
+        <label for="grib-path" data-i18n="GRIB path on Pi">Dateipfad auf dem Pi</label>
+        <input id="grib-path" type="text" placeholder="/home/pi/weather.grb2" required>
+        <button class="small-button" data-i18n="Load GRIB path">Pfad laden</button>
+      </form>
+      <form id="grib-source-form" class="grib-form">
+        <label for="grib-source" data-i18n="Saved GRIB sources">Gespeicherte GRIB-Quellen</label>
+        <select id="grib-source" required></select>
+        <button class="small-button" data-i18n="Load GRIB source">Quelle laden</button>
+      </form>
+      <form id="grib-url-form" class="grib-form grib-url-form">
+        <label for="grib-url" data-i18n="Direct GRIB URL">Direkter GRIB-Downloadlink</label>
+        <input id="grib-url" type="url" placeholder="https://" required>
+        <label for="grib-source-name" data-i18n="Optional GRIB source name">Name zum Speichern der Quelle (optional)</label>
+        <input id="grib-source-name" type="text" maxlength="100">
+        <button class="small-button" data-i18n="Load GRIB URL">GRIB vom Link laden</button>
+      </form>
+      <p id="grib-status" role="status"></p>
+    </dialog>
+    <dialog id="delete-dialog" aria-labelledby="delete-title" aria-describedby="delete-description">
+      <form id="delete-form">
+        <h2 id="delete-title"></h2>
+        <p id="delete-description"></p>
+        <div id="delete-options"></div>
+        <p id="delete-result" role="status"></p>
+        <div class="delete-actions">
+          <button id="delete-cancel" type="button" class="small-button" data-i18n="Cancel deletion">Abbrechen</button>
+          <button id="delete-confirm" type="submit" class="small-button delete-button" data-i18n="Delete selected">Auswahl löschen</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="help-dialog" aria-labelledby="help-title">
+      <header class="help-header"><div><h2 id="help-title" data-i18n="Help">Hilfe</h2><small>LTC_Ocpn_Route_Importer <span id="help-version"></span></small></div><form method="dialog"><button class="small-button" data-i18n="Close help">Schließen</button></form></header>
+      <p id="help-status" role="status" hidden></p>
+      <div id="help-content"></div>
+    </dialog>
+  </body>
+</html>

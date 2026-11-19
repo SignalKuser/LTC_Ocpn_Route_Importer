@@ -1,0 +1,185 @@
+<article lang="fr">
+  <p>Multilingue DE, NL, GB, FR</p>
+    <p>Téléchargement <a href="https://github.com/SignalKuser/LTC_Ocpn_Route_Importer/releases" target="_blank" rel="noopener noreferrer">https://github.com/SignalKuser?tab=repositories</a></p>
+  <section>
+    <h3>Prérequis</h3>
+    <p>OpenCPN, version 32 bits pour Windows</p>
+    <p>Signal K, Raspberry Pi ARM64</p>
+  </section>
+  <section>
+    <h3>Préparation de Signal K</h3>
+    <p>Le module Signal K (LTC_Ocpn_Route_Importer) peut utiliser des fichiers GPX locaux stockés sous Windows ou sur le Raspberry Pi.</p>
+    <p>Il est toutefois plus pratique de tracer la route dans OpenCPN et de l’envoyer à la volée à Signal K.</p>
+    <p>Créer dans Signal K un compte « opencpn » avec les droits de lecture et d’écriture, puis exécuter la commande suivante dans le terminal du Pi pour créer un jeton.</p>
+    <pre><code>signalk-generate-token -u opencpn -e 1y -s ~/.signalk/security.json</code></pre>
+    <p>Cela permet à Signal K d’accepter ensuite les données d’OpenCPN. Conserver le jeton ou le copier et l’enregistrer pour une utilisation ultérieure.</p>
+  </section>
+  <section>
+    <h3>Installation de LTC_Ocpn_Route_Importer</h3>
+    <p>Placer de préférence le script PowerShell et le module dans le même dossier, puis lancer le script depuis ce dossier.</p>
+    <p>Le script trouve automatiquement le module et le dossier des modules Signal K sur le Pi, puis y installe le module.</p>
+    <p>Si Signal K est déjà en cours d’exécution, le redémarrer, puis activer le module dans la configuration des modules Signal K (« Enable »).</p>
+    <p>Le module est accessible sous « Webapps ».</p>
+  </section>
+  <section>
+    <h3>Installations supplémentaires</h3>
+    <p>Pour les fournisseurs de données maillées, le Pi a besoin de « grib_get » pour lire les fichiers GRIB. Avec une connexion à Internet, exécuter ces commandes dans le terminal du Pi.</p>
+    <pre><code>sudo apt-get update
+sudo apt-get install libeccodes-tools</code></pre>
+    <p>Pour DWD, exécuter également la commande suivante.</p>
+    <pre><code>sudo apt-get install bzip2</code></pre>
+    <p>Met Office UKV (NetCDF) requiert python3-gdal sur le Pi.</p>
+    <pre><code>sudo apt-get install python3-gdal</code></pre>
+  </section>
+  <section>
+    <h3>Modules Signal K attendus</h3>
+    <p>À l’origine, j’ai écrit ce module pour SMHI. Le Swedish Meteorological and Hydrological Institute propose depuis peu un module Signal K appelé SMHI Weather Provider.</p>
+    <p>Pour accéder à ces données pour la Suède, installer ce module dans Signal K.</p>
+  </section>
+  <section>
+    <h3>Configuration d’OpenCPN</h3>
+    <p>L’import direct de routes depuis OpenCPN nécessite le module externe <strong>Signal K Route Sender</strong>.</p>
+    <p><a href="https://github.com/SignalKuser/LTC_Ocpn_Route_Importer/releases/tag/v.1.1.44" target="_blank" rel="noopener noreferrer">Version GitHub contenant Signal K Route Sender</a></p>
+    <p>Dans <strong>Assets</strong>, télécharger et décompresser l’archive RAR. Dans OpenCPN, installer le paquet <code>SignalKRouteSender-*.tar.gz</code> correspondant via <strong>Plugins → Importer un plugin</strong>, puis activer le module.</p>
+    <p>Sous <strong>Options → Connexions</strong>, configurer et activer la connexion Signal K. Si le serveur exige une authentification, saisir le jeton Signal K dans cette connexion sous <strong>Avancé → Auth Token</strong>. Le module utilise cette connexion.</p>
+  </section>
+  <section>
+    <h3>Utilisation d’OpenCPN</h3>
+    <p>Tracer une route dans OpenCPN. Faire un clic droit sur un point de route et, de préférence, donner un nom à la route dans le menu contextuel « Route / Propriétés ».</p>
+    <p>Sélectionner ensuite « Envoyer à Signal K » sous « Route ».</p>
+    <p>La route GPX est alors envoyée à Signal K et disponible à l’adresse /signalk/v2/api/resources/routes.</p>
+    <p>D’autres modules Signal K, comme Freeboard-SK et Binnacle, y enregistrent aussi leurs routes. Ces routes peuvent également être utilisées avec LTC_Ocpn_Route_Importer.</p>
+  </section>
+  <section>
+    <h3>Utilisation de LTC_Ocpn_Route_Importer</h3>
+    <p>Sur la page 1, choisir <strong>Signal K</strong>, <strong>GPX (Win)</strong> ou <strong>GPX (Pi)</strong> comme source de la route. <strong>GPX (Win)</strong> ouvre le sélecteur de fichiers Windows et permet de sélectionner plusieurs fichiers. Dans <strong>GPX (Pi)</strong>, saisir le chemin, cliquer sur <strong>Enregistrer le dossier</strong>, puis choisir un fichier dans la liste. Si le fichier GPX contient plusieurs routes, chacune peut être sélectionnée séparément. Les points de route s’affichent en dessous. Sélectionner un fournisseur météo sous « Fournisseur ». Les fournisseurs fonctionnent de différentes façons. Certains fournissent la météo pour une heure et des coordonnées données. Pour les autres, des fichiers GRIB sont téléchargés automatiquement et les coordonnées des points de route sont associées aux données du fichier GRIB pour déterminer la météo.</p>
+  </section>
+  <section>
+    <h3>Télécharger la météo</h3>
+    <p>La météo est téléchargée, associée aux points de route selon l’heure et enregistrée immédiatement. La sélection se fait sous « Prévision enregistrée ».</p>
+  </section>
+  <section>
+    <h3>Prévision enregistrée</h3>
+    <p>Choix entre plusieurs versions d’un même fournisseur ou de fournisseurs différents. Les prévisions enregistrées peuvent y être supprimées.</p>
+    <p>Cela peut être utile pour comparer différents fournisseurs sur une même route.</p>
+  </section>
+  <section>
+    <h3>SOG prévue</h3>
+    <p>C’est la vitesse fond théorique retenue lorsque le bateau est à l’arrêt, pour la planification au port.</p>
+    <p>Après avoir évalué le vent, saisir ici la vitesse fond prévue.</p>
+    <p>Cette valeur sert de point de départ au calcul de l’ETA.</p>
+  </section>
+  <section>
+    <h3>Calcul de l’ETA</h3>
+    <h4>GPS, SOG, COG</h4>
+    <p>À activer de préférence pour l’ETA. Cette option utilise la position et la vitesse fond réelle, qui tient déjà compte du vent et du courant.</p>
+    <p>Lorsque GPS, SOG et COG sont actifs et que l’ETA repose sur les données GPS, l’application utilise la SOG mesurée et le COG pour calculer la part de cette vitesse vers le prochain point de route. Pour les tronçons suivants, l’application utilise la source de vitesse adaptée ou la SOG prévue.</p>
+    <p>Le courant à la position actuelle est déjà pris en compte dans la vitesse fond mesurée.</p>
+    <p>Lorsque le vecteur de courant est désactivé, l’application ne calcule pas de prévision de courant supplémentaire pour les tronçons suivants.</p>
+    <p>Si la SOG GPS est inutilisable et qu’aucune autre source de vitesse ne s’applique, l’application utilise la SOG prévue.</p>
+    <p>Pour estimer le courant à partir des mesures à bord, les deux mouvements doivent être exprimés sous forme de vecteurs.</p>
+    <ul>
+      <li>La SOG et le COG indiquent la vitesse et la direction du déplacement du bateau par rapport au fond.</li>
+      <li>La STW et la direction réelle du déplacement dans l’eau indiquent le mouvement du bateau par rapport à l’eau.</li>
+    </ul>
+    <p>Le cap peut servir d’approximation. La dérive latérale due au vent rend l’estimation moins précise.</p>
+    <p>La différence entre ces vecteurs donne le courant estimé. La STW seule ne suffit pas.</p>
+    <h4>Vecteur de courant</h4>
+    <p>L’application utilise HARMONIC et HARMONIC.IDX pour l’ETA lorsque « Vecteur de courant » est activé, que des données adaptées sont disponibles et que la vitesse du tronçon provient de la SOG moteur, de la polaire LTC, de la STW ou de la SOG prévue.</p>
+    <p>Pour trouver les données adaptées, l’application vérifie dans les fichiers IDX si les coordonnées des points de route correspondent. Il est préférable de regrouper les fichiers IDX dans un même dossier. L’application cherche automatiquement les fichiers IDX adaptés dans les sous-dossiers et les indique pour chaque point de route. Plusieurs fichiers IDX peuvent ainsi servir pour une même route.</p>
+    <p>Fichiers IDX pour l’Europe, la mer du Nord, la baie Allemande et la mer Baltique, entre autres <a href="https://github.com/SignalKuser?tab=repositories" target="_blank" rel="noopener noreferrer">https://github.com/SignalKuser?tab=repositories</a></p>
+    <p>Pour chaque tronçon concerné, elle consulte le courant au point d’arrivée du tronçon à l’heure d’arrivée estimée provisoirement.</p>
+    <p>Elle calcule les composantes du courant le long du tronçon et perpendiculairement à celui-ci, puis corrige l’ETA en conséquence. Une mesure de la STW est facultative.</p>
+    <p>Si un tronçon utilise la SOG GPS mesurée, l’application n’applique pas la correction IDX sur ce tronçon.</p>
+    <p>Lors du chargement d’une route, elle peut toutefois vérifier et afficher la disponibilité de stations de courant adaptées. Cette vérification seule ne modifie pas l’ETA.</p>
+    <h4>STW – Speed Through Water</h4>
+    <p>En l’absence de GPS/SOG, la STW peut servir de vitesse de référence pour l’ETA. Le vecteur de courant permet alors d’estimer la vitesse fond. Sans position GPS, la progression réelle sur la route reste inconnue.</p>
+    <h4>AWS – Apparent Wind Speed</h4>
+    <p>Pour l’ETA, le vent actuel fourni par Signal K est pris comme hypothèse pour les tronçons à venir. En l’absence de vent vrai, l’application le déduit de l’AWS, de l’AWA, de la vitesse du bateau et de sa route. La polaire LTC est lue sans être modifiée.</p>
+    <h4>Utiliser le cap vrai</h4>
+    <p>Lorsque l’option est activée, l’application oriente l’AWS et l’AWA à l’aide de « navigation.headingTrue ». Sinon, elle utilise le COG comme approximation.</p>
+    <p>La STW disponible sert au calcul du vent à partir de l’AWS et de l’AWA. L’option « STW – Speed Through Water » détermine uniquement si la STW peut aussi servir de vitesse de référence pour l’ETA.</p>
+    <p>Si Signal K ne dispose d’aucune source de cap, le COG sert d’approximation.</p>
+    <h4>Moteur marche/arrêt</h4>
+    <p>Lorsque « Moteur marche/arrêt » est activé, l’application utilise la SOG moteur comme base pour tous les tronçons restants.</p>
+    <p>Cette valeur est prioritaire sur la SOG GPS, la polaire LTC, la STW et la SOG prévue.</p>
+    <p>Si le vecteur de courant est aussi activé et que des fichiers IDX adaptés sont disponibles, l’application corrige la SOG moteur pour chaque tronçon.</p>
+    <h4>Données de polaire</h4>
+    <p>Les polaires déterminent la vitesse estimée pour chaque tronçon lorsque l’option est activée et qu’un fichier adapté est sélectionné. L’application utilise la vitesse du vent vrai attendue (TWS) et l’angle du vent par rapport au tronçon (TWA). Elle estime ainsi la vitesse de progression du bateau vers le prochain point de route. Face au vent, le calcul peut aussi tenir compte du louvoyage.</p>
+    <p>Exemple. Un tronçon de 20 milles nautiques à une SOG prévue de 5 kn dure environ 4 heures. Si, à cause du vent de face, la polaire indique une progression de seulement 4 kn vers le point d’arrivée, l’application compte 5 heures. Cela décale aussi les ETA des points suivants et, le cas échéant, les heures des prévisions affichées.</p>
+    <p>La SOG moteur est prioritaire si le moteur est activé. En mode voile, une polaire utilisable est prioritaire sur la SOG GPS, la STW et la SOG prévue.</p>
+    <p>La précision de l’ETA dépend donc aussi de la fidélité avec laquelle la polaire choisie représente le bateau.</p>
+  </section>
+  <section>
+    <h3>Rayon du point de route</h3>
+    <p>Un point de route est considéré comme atteint dès que le bateau entre dans le rayon défini.</p>
+  </section>
+  <section>
+    <h3>Distance et relèvement vers le prochain point de route</h3>
+    <p>La position actuelle peut être éloignée de la route.</p>
+    <p>La distance et le relèvement vers le point de route le plus proche s’affichent ici.</p>
+    <p>Une fois ce point atteint, tous les points de route précédents sont considérés comme passés.</p>
+  </section>
+  <section>
+    <h3>Pondération du vent</h3>
+    <p>Le vent affiché provient du fournisseur et correspond à une prévision. Le vent mesuré à bord est beaucoup plus précis et est donc pris en compte. Plus l’éloignement augmente dans l’espace et dans le temps, moins le vecteur du vent mesuré à bord (vitesse et direction) pèse dans le calcul, jusqu’à n’avoir que peu d’effet. Son poids augmente à l’approche d’un point de route.</p>
+  </section>
+<h3>Portée du vent mesuré à bord</h3>
+<p>Le curseur comporte 15 niveaux. Le troisième est sélectionné par défaut. Plus la distance le long de la route et la durée de trajet estimée augmentent, plus la prévision compte. La limite la plus avancée en proportion détermine la pondération. Dès qu’une des deux limites est atteinte, la prévision compte pour 100 % si elle est disponible et activée.</p>
+<ol>
+<li>0,5 NM ou 10 min</li>
+<li>1 NM ou 20 min</li>
+<li>2 NM ou 30 min</li>
+<li>3 NM ou 45 min</li>
+<li>5 NM ou 60 min</li>
+</ol>
+<p>Du niveau 6 au niveau 15, chaque cran ajoute 2 NM et 24 minutes. Le niveau 15 atteint 25 NM ou 5 heures.</p>
+<p>Si la vitesse du vent combiné est inférieure au tiers de la somme des deux vitesses pondérées, la source dont le poids est le plus élevé fournit sa vitesse et sa direction du vent pour ce point de route. À poids égal, le vent mesuré à bord est prioritaire.</p>
+<h3>Vérifier les chemins Signal K</h3>
+<p>Rechercher le chemin sous <strong>Data → Browser</strong>. Pour les données du bateau, <strong>Context</strong> doit indiquer <code>self</code>. <strong>Value</strong>, <strong>Timestamp</strong> et <strong>Source</strong> indiquent la valeur, son horodatage et sa source.</p>
+<ul>
+<li><code>navigation.position</code> — Position GPS pour la progression, la distance et le relèvement vers le prochain point</li>
+<li><code>navigation.speedOverGround</code> — Vitesse fond (SOG) pour l’ETA et comme solution de repli à la STW pour calculer le vent</li>
+<li><code>navigation.courseOverGroundTrue</code> — Route fond vraie (COG) pour l’ETA et comme approximation de l’orientation du bateau</li>
+<li><code>navigation.speedThroughWater</code> — Vitesse surface (STW) pour l’ETA et le calcul du vent</li>
+<li><code>navigation.headingTrue</code> — Cap vrai si l’option est activée</li>
+<li><code>environment.wind.speedApparent</code> — Vitesse du vent apparent (AWS)</li>
+<li><code>environment.wind.angleApparent</code> — Angle du vent apparent (AWA) par rapport à l’étrave</li>
+<li><code>environment.wind.speedTrue</code> — Vitesse du vent vrai (TWS)</li>
+<li><code>environment.wind.directionTrue</code> — Direction du vent vrai par rapport au nord vrai</li>
+</ul>
+<h3>Points d’accès de l’API Signal K</h3>
+<p>Ajouter le chemin à l’adresse du serveur Signal K pour l’ouvrir dans un navigateur.</p>
+<ul>
+<li><code>/signalk/v1/api/vessels/self/navigation/speedThroughWater</code> — Exemple de donnée du bateau en m/s</li>
+<li><code>/signalk/v2/api/vessels/self/navigation/course</code> — Route active, prochain point et sens de parcours</li>
+<li><code>/signalk/v2/api/resources/routes</code> — Routes enregistrées dans Signal K</li>
+<li><code>/signalk/v2/api/weather/_providers</code> — Fournisseurs météo enregistrés</li>
+<li><code>/signalk/v2/api/weather/forecasts/point</code> — Prévision pour les coordonnées d’un point de route</li>
+</ul>
+<h3>Export direct depuis qtVlm</h3>
+<p>Sur la page 2, activer la <strong>réception qtVlm</strong>. Dans qtVlm, ouvrir <strong>Échangeur de données → Envoyer</strong>, choisir le type et l’élément à transférer, puis cliquer sur <strong>Envoyer</strong>. Le Raspberry Pi détecte automatiquement l’émetteur. La page 2 affiche les éléments importés et les erreurs éventuelles.</p>
+<p>Les deux appareils doivent être sur le même réseau local, par exemple le point d’accès Wi-Fi du Pi du bateau. Le pare-feu doit autoriser la découverte sur le port UDP 5555 et les connexions du Pi à qtVlm sur le port TCP 5555.</p>
+<ul>
+<li>Les routes apparaissent dans la source de routes Signal K.</li>
+<li>Les parcours apparaissent comme routes dans la source Signal K.</li>
+<li>Les POI sont enregistrés comme points de route Signal K.</li>
+<li>Les archives de POI sont enregistrées comme points de route Signal K avec le nom de l’archive.</li>
+<li>Les ensembles de barrières sont disponibles en GeoJSON sur la page 2.</li>
+<li>Les traces archivées sont disponibles comme fichiers GPX dans <strong>GPX (Pi)</strong>.</li>
+<li>Les fichiers GRIB apparaissent dans le sélecteur de fichiers GRIB.</li>
+</ul>
+<p>L’import des routes et des POI qtVlm nécessite Python 3 sur le Pi. Pour le GPS et le vent, saisir l’adresse IP du Pi et le port <strong>10110</strong> sous <strong>Connexions NMEA → Entrants → Sources réseau → TCP</strong>. L’adresse par défaut du Pi du bateau est <code>10.42.0.1</code>. Signal K doit émettre les phrases NMEA 0183 nécessaires.</p>
+<h3>Fichier GRIB personnel</h3>
+<ol>
+<li>Sur la page 2, cocher <strong>Activer la réception qtVlm</strong>. Envoyer le fichier GRIB depuis qtVlm. Le fichier reçu s’affiche sur la page 2.</li>
+<li>Sur la page 1, choisir <strong>Fichier GRIB personnel</strong> dans la liste des fournisseurs, puis cliquer sur <strong>Charger un fichier GRIB</strong> sous la prévision enregistrée.</li>
+<li>Choisir le fichier dans <strong>Fichiers GRIB enregistrés</strong>, puis cliquer sur <strong>Utiliser le fichier</strong>.</li>
+<li>Sélectionner les champs souhaités dans <strong>Données supplémentaires</strong>, puis cliquer à droite sur <strong>Analyser le GRIB</strong>.</li>
+<li>Afficher les valeurs supplémentaires dans le tableau via <strong>Colonnes supplémentaires</strong>.</li>
+</ol>
+<p>Si vous disposez déjà d’un fichier, commencez à l’étape 2. La boîte de dialogue permet de téléverser un fichier, de saisir un chemin absolu sur le Pi ou d’utiliser un lien de téléchargement HTTP(S) direct. Donner un nom au lien pour l’enregistrer comme source.</p>
+<p>Sur la page 2, <strong>Import direct qtVlm</strong> affiche les fichiers GRIB enregistrés avec la date et l’heure d’importation. Pour retirer un fichier, cliquer à droite sur <strong>Supprimer</strong> et confirmer.</p>
+<p>Le fichier et la prévision calculée sont disponibles hors ligne. L’analyse sur le Pi nécessite <code>libeccodes-tools</code>.</p>
+<p>Bonne navigation/C</p>
+</article>

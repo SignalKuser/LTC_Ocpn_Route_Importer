@@ -1,0 +1,30 @@
+{
+  "name": "signalk-route-weather",
+  "version": "1.1.47",
+  "description": "Marine weather at each waypoint’s estimated arrival time. Import routes directly from OpenCPN with the Route Sender plugin from GitHub, or from qtVlm.",
+  "keywords": [
+    "signalk-node-server-plugin",
+    "signalk-webapp",
+    "signalk-plugin-configurator"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SignalKuser/LTC_Ocpn_Route_Importer.git"
+  },
+  "signalk-plugin-enabled-by-default": false,
+  "signalk": {
+    "appIcon": "./assets/icons/route-sender-webapp.png",
+    "displayName": "LTC_Ocpn_Route_Importer v.1.1.47"
+  },
+  "main": "plugin/index.js",
+  "files": [
+    "plugin/",
+    "public/",
+    "openApi.json",
+    "README.md"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}

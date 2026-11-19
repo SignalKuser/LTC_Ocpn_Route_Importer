@@ -1,0 +1,155 @@
+<article lang="en-GB">
+<p>Multi-language (DE, NL, GB, FR)
+Download: <a href="https://github.com/SignalKuser/LTC_Ocpn_Route_Importer/releases">https://github.com/SignalKuser/LTC_Ocpn_Route_Importer/releases</a></p>
+<h3>Requirements</h3>
+<p>OpenCPN, 32-bit version for Windows<br />
+Signal K, Raspberry Pi ARM64</p>
+<h3>Signal K Preparation</h3>
+<p>The Signal K plugin (LTC_Ocpn_Route_Importer) can use local GPX files stored on Windows or a Raspberry Pi.
+However, a more elegant approach is to plot the route in OpenCPN and send it to Signal K &quot;on the fly.&quot;</p>
+<p>To do this, create a user named &quot;opencpn&quot; in Signal K with read/write permissions,
+and then generate a token using the following command in the Raspberry Pi terminal:</p>
+<pre><code class="language-bash">signalk-generate-token -u opencpn -e 1y -s ~/.signalk/security.json
+</code></pre>
+<p>This is necessary to allow Signal K to accept data from OpenCPN. Keep a copy of the token for later use.</p>
+<h3>LTC_Ocpn_Route_Importer Installation</h3>
+<p>It is best to place the PowerShell script in the same folder as the plugin and run it from there.
+The script will automatically locate the plugin and the Signal K plugin directory on the Raspberry Pi and perform the installation.
+If Signal K is already running, restart it, then go to the Signal K plugin configuration and set it to &quot;enable.&quot;
+The plugin itself can be accessed via the Webapps section.</p>
+<h3>Additional Installations</h3>
+<p>Raster provider: To read GRIB files, the Raspberry Pi requires &quot;grib_get.&quot;
+Therefore, if the Raspberry Pi has internet access, run the following commands in the terminal:</p>
+<pre><code class="language-bash">sudo apt-get update
+sudo apt-get install libeccodes-tools
+sudo apt-get install bzip2  # DWD
+sudo apt-get install python3-gdal  # Met Office UKV (NetCDF)
+</code></pre>
+<h3>Expected Signal K plugins</h3>
+<p>To use SMHI forecasts in Signal K, install and enable the “SMHI Weather Provider” plugin.</p>
+<h3>OpenCPN configuration</h3>
+<p>Direct route import from OpenCPN requires the external OpenCPN plugin <strong>Signal K Route Sender</strong>.</p>
+<p><a href="https://github.com/SignalKuser/LTC_Ocpn_Route_Importer/releases/tag/v.1.1.44" target="_blank" rel="noopener noreferrer">GitHub release containing Signal K Route Sender</a></p>
+<p>Under <strong>Assets</strong>, download and extract the RAR archive. In OpenCPN, use <strong>Plugins → Import Plugin</strong> to install the matching <code>SignalKRouteSender-*.tar.gz</code> package, then enable the plugin.</p>
+<p>Under <strong>Options → Connections</strong>, set up and enable the Signal K connection. If the server requires authentication, enter the Signal K token under <strong>Advanced → Auth Token</strong> in that connection. The sender uses this connection.</p>
+<h3>Using OpenCPN</h3>
+<p>Draw a route in OpenCPN. Right-click on a waypoint or the route itself to open the context menu, and—ideally—assign a name via the &quot;Properties&quot; option.
+Then, select &quot;Send to Signal K&quot; under the route options at the bottom.
+The GPX route will be transmitted to Signal K and stored at <code>/signalk/v2/api/resources/routes</code>.
+Other Signal K plugins (such as Freeboard-SK, Binnacle, etc.) also store their routes here; these can likewise be used with the <code>LTC_Ocpn_Route_Importer</code>.</p>
+<h3>Using <code>LTC_Ocpn_Route_Importer</code></h3>
+<p>On page 1, choose <strong>Signal K</strong>, <strong>GPX (Win)</strong> or <strong>GPX (Pi)</strong> as the route source. <strong>GPX (Win)</strong> opens the Windows file picker and supports selecting multiple files. Under <strong>GPX (Pi)</strong>, enter the folder path, click <strong>Save folder</strong>, then choose a file from the list. If a GPX file contains multiple routes, each can be selected individually. The waypoints will appear at the bottom. Choose a weather provider from the &quot;Provider&quot; menu; various options are available. Some providers offer weather data for specific coordinates at a given time, while others automatically download GRIB files, map the waypoint coordinates to the GRIB data, and determine the weather accordingly.</p>
+<h3>Downloading weather</h3>
+<p>The weather data is downloaded, assigned to the waypoints based on time, and saved directly. They can be accessed via &quot;Saved Weather Run.&quot;</p>
+<h3>Saved Weather Run</h3>
+<p>This section holds multiple versions from the same or different providers. Entries can also be deleted here.
+This is useful for comparing data from different providers for a specific route.</p>
+<h3>Planned SOG (Speed Over Ground)</h3>
+<p>This is the theoretical, assumed speed over ground for a vessel that is not yet underway (used for voyage planning).
+Once the wind conditions have been assessed, the estimated SOG can be entered here.
+This serves, in effect, as a preliminary step for calculating the ETA (Estimated Time of Arrival).</p>
+<h3>ETA Calculation</h3>
+<h3>GPS, SOG, COG</h3>
+<p>It is best to enable these for ETA calculations. They provide the boat’s position and actual speed over ground (SOG), which already accounts for the effects of wind and current.
+When GPS, SOG, and COG are active and the ETA is based on GPS data, the app uses the measured SOG and, in combination with the course over ground (COG), calculates the component of that speed acting along the leg to the next waypoint. For later legs, the app uses the applicable speed source or the planned SOG.
+The current at the current position is already factored into the measured speed over ground.
+If the &quot;current vector&quot; feature is disabled, the app will not calculate additional current forecasts for subsequent route segments.
+If no reliable GPS-based SOG is available—and no other speed source is present—the app will use the planned SOG value.
+To estimate the current based on onboard measurements, both types of motion are required as vectors:</p>
+<ul>
+<li>SOG and COG indicate the speed and direction of the boat's movement over the ground.</li>
+<li>Speed through water (STW) and the actual direction of movement through the water indicate how the boat is moving relative to the water. (The vessel's heading can serve as an approximation here, though the estimate becomes less accurate if there is significant leeway due to wind.)
+The difference between these vectors yields the estimated current. STW alone is not sufficient for this calculation!</li>
+</ul>
+<h3>Current Vector</h3>
+<p>When the &quot;current vector&quot; feature is enabled and relevant data is available, the app incorporates HARMONIC and HARMONIC.IDX files into its ETA calculations—provided the speed for a given segment is derived from engine-based SOG, LTC polars, STW, or the planned SOG value.
+Relevant data: The app checks the IDX files to see if the waypoint coordinates match. It is recommended to store all IDX files in a single folder; the app will automatically search through them recursively to identify the appropriate files, which are then displayed for each individual waypoint. This allows for the use of different IDX files along a single route. IDX files for Europe, the North Sea, the German Bight, the Baltic Sea, etc.: <a href="https://github.com/SignalKuser?tab=repositories">https://github.com/SignalKuser?tab=repositories</a></p>
+<p>For each such segment, the app queries the current at the destination waypoint for the tentatively estimated time of arrival (ETA).
+Based on this, it calculates the current components acting along and across the segment and uses them to adjust the ETA. A measurement of Speed Through Water (STW) is optional for this purpose.
+If a segment is based on measured GPS-SOG (Speed Over Ground), the app omits the IDX correction for that segment.
+When loading a route, the app can still check for and indicate whether relevant current stations are available. This check alone does not alter the ETA.</p>
+<h3>STW – Speed Through Water</h3>
+<p>If GPS/SOG data is unavailable, STW (Speed Through Water) can serve as the speed basis for calculating the ETA;
+speed over ground for future legs is estimated by incorporating the current vector. Without a GPS position, the actual progress along the route remains unknown.</p>
+<h3>AWS – Apparent Wind Speed</h3>
+<p>For ETA calculations, the current Signal K wind data is assumed to apply to future route segments. If true wind data is missing,
+the app derives it from the AWS/AWA (Apparent Wind Speed/Angle) in combination with the boat's speed and heading. The LTC polar data is read-only and cannot be modified.</p>
+<h3>Use True Heading</h3>
+<p>When enabled, the app aligns AWS/AWA data using &quot;navigation.headingTrue.&quot; Otherwise, it uses COG as an approximation.
+If available, STW is used for wind calculations derived from AWS/AWA. The &quot;STW – Speed Through Water&quot; setting specifically determines
+whether STW should also be used as a basis for calculating the ETA.
+If no heading source is available in Signal K, COG is used as an approximation.</p>
+<h3>Engine On/Off</h3>
+<p>Once &quot;Engine On/Off&quot; is activated, the app uses the &quot;motor SOG&quot; (speed over ground under engine power) as the basis for all remaining route segments.
+In this case, this value takes precedence over GPS-based SOG, LTC polar data, STW, and any planned SOG values. If the current vector is also active (provided suitable IDX files are available), the app adjusts the &quot;motor-SOG&quot; (speed over ground under engine power) for the respective leg.</p>
+<h3>Polar data</h3>
+<p>When enabled and a suitable file is selected, polar data determines the estimated speed for each leg of the route. The app uses the expected true wind speed (TWS) and the true wind angle (TWA) relative to the leg to estimate how quickly the boat will progress toward the next waypoint. In the case of a headwind, the calculation can also account for tacking (beating).
+Example: A 20-nautical-mile leg, based on a planned SOG of 5 knots, would take approximately 4 hours. If the polar data indicates a progress speed of only 4 knots toward the destination due to a headwind, the app calculates a duration of 5 hours. Consequently, the estimated times of arrival (ETAs) for subsequent waypoints—and any associated predicted arrival times—are shifted accordingly.
+When the engine is active, the &quot;motor-SOG&quot; takes precedence. In sailing mode, valid polar data takes precedence over GPS-based SOG, speed through the water (STW), and the planned SOG value.
+Therefore, the accuracy of the ETA depends on how well the selected polar data represents the boat's actual performance.</p>
+<h3>Waypoint Radius</h3>
+<p>A waypoint is considered reached once the vessel enters the defined radius.</p>
+<h3>Distance and Bearing to the Next Waypoint</h3>
+<p>It is possible for the current position to be some distance away from the planned route.
+In such cases, the system displays the distance and bearing to the nearest waypoint on the route.
+Once this waypoint is reached, all preceding waypoints are considered passed.</p>
+<h3>Wind Weighting</h3>
+<p>The wind data provided by the external source is a forecast. Since locally measured wind data is significantly more accurate, it is incorporated into the calculation. As the distance (in terms of both space and time) from a waypoint increases, the weight given to the &quot;on-board&quot; wind data (the wind vector, comprising speed and direction) decreases, eventually becoming negligible. As the boat approaches a waypoint, the weight of the on-board data increases again.</p>
+<h3>Boat-Based Wind Range</h3>
+<p>The 15-level slider controls wind weighting. Level 3 is the default. At either limit, the provider forecast supplies 100% of the wind when enabled and available.
+The slider determines the extent to which the wind currently measured at the boat’s location influences the ETA calculation. At the boat’s current position, this data carries a 100% weight. As a waypoint lies further along the route—and as the estimated travel time to reach it increases—the forecast from the selected weather provider carries progressively more weight. The distance factor accounts for the fact that wind conditions may differ further ahead, while the travel time factor accounts for the possibility that wind conditions may change by the time of arrival, even if the waypoint is nearby. For each waypoint, the system applies the threshold that is reached first (in relative terms). Once either of these limits is met, the weight of the boat-measured wind drops to 0%.<br />
+0.5 nm or 10 min<br />
+1 nm or 20 min<br />
+2 nm or 30 min<br />
+3 nm or 45 min<br />
+5 nm or 60 min</p>
+<p>From level 6 to 15, each step adds 2 nm and 24 minutes. Level 15 reaches 25 nm or 5 hours.</p>
+<p>If the blended wind speed falls below one third of the sum of the two weighted speeds, the higher-weighted source supplies its full wind speed and direction for that waypoint. At equal weights, the onboard wind takes precedence.</p>
+<h3>Checking Signal K paths</h3>
+<p>In Signal K, open <strong>Data → Browser</strong> and search for the path. For the boat’s own data, check that <strong>Context</strong> is <code>self</code>. <strong>Value</strong>, <strong>Timestamp</strong> and <strong>Source</strong> show the current reading, when it was updated and where it came from.</p>
+<ul>
+<li><code>navigation.position</code> — GPS position for route progress, distance and bearing to the next waypoint</li>
+<li><code>navigation.speedOverGround</code> — Speed over ground (SOG) for ETA and as an alternative to STW for wind calculation</li>
+<li><code>navigation.courseOverGroundTrue</code> — True course over ground (COG) for ETA and as an approximation of boat orientation</li>
+<li><code>navigation.speedThroughWater</code> — Speed through water (STW) from the log for ETA and wind calculation</li>
+<li><code>navigation.headingTrue</code> — True heading when the heading option is enabled</li>
+<li><code>environment.wind.speedApparent</code> — Apparent wind speed (AWS)</li>
+<li><code>environment.wind.angleApparent</code> — Apparent wind angle (AWA) relative to the bow</li>
+<li><code>environment.wind.speedTrue</code> — True wind speed (TWS)</li>
+<li><code>environment.wind.directionTrue</code> — True wind direction, measured from true north</li>
+</ul>
+<h3>Signal K API endpoints</h3>
+<p>Append these paths to the Signal K server address to check the API in a browser.</p>
+<ul>
+<li><code>/signalk/v1/api/vessels/self/navigation/speedThroughWater</code> — Example onboard reading in m/s</li>
+<li><code>/signalk/v2/api/vessels/self/navigation/course</code> — Active route, next waypoint and direction</li>
+<li><code>/signalk/v2/api/resources/routes</code> — Routes stored in Signal K</li>
+<li><code>/signalk/v2/api/weather/_providers</code> — Registered weather providers</li>
+<li><code>/signalk/v2/api/weather/forecasts/point</code> — Forecast for waypoint coordinates</li>
+</ul>
+<h3>Direct export from qtVlm</h3>
+<p>On page 2, enable the <strong>qtVlm receiver</strong>. In qtVlm open <strong>Data Exchanger → Send</strong>, choose the data type and item, and select <strong>Send</strong>. The Raspberry Pi discovers the sender automatically. Page 2 shows imported items and any errors.</p>
+<p>Both devices need to be on the same local network, such as the boat Pi hotspot. The firewall needs to allow discovery on UDP port 5555 and connections from the Pi to qtVlm on TCP port 5555.</p>
+<ul>
+<li>Routes appear under the Signal K route source.</li>
+<li>Pathways appear as routes under the Signal K route source.</li>
+<li>POIs are saved as Signal K waypoints.</li>
+<li>POI archives are saved as Signal K waypoints tagged with the archive name.</li>
+<li>Barrier sets are available as GeoJSON files on page 2.</li>
+<li>Archived tracks appear as GPX files under <strong>GPX (Pi)</strong>.</li>
+<li>GRIB files appear under Load GRIB file.</li>
+</ul>
+<p>Importing qtVlm routes and POIs requires Python 3 on the Pi. For GPS and wind, enter the Pi IP address and port <strong>10110</strong> under <strong>NMEA Connections → Incoming → Network sources → TCP</strong>. The boat Pi uses <code>10.42.0.1</code> by default. Signal K must output the required NMEA 0183 sentences.</p>
+<h3>Own GRIB file</h3>
+<ol>
+<li>On page 2, select <strong>Enable qtVlm receiver</strong>. Send the GRIB file from qtVlm. The received file appears on page 2.</li>
+<li>On page 1, choose <strong>Own GRIB file</strong> in the provider list and click <strong>Load GRIB file</strong> below the saved weather run.</li>
+<li>Select the file under <strong>Saved GRIB files</strong> and click <strong>Use GRIB file</strong>.</li>
+<li>Choose any extra fields you need under <strong>Additional forecast data</strong>. Then click <strong>Evaluate GRIB</strong> on the right.</li>
+<li>Use <strong>Additional table columns</strong> to show the extra values in the table.</li>
+</ol>
+<p>If you already have a file, start at step 2. The dialog lets you upload a file, enter an absolute path on the Pi, or use a direct HTTP(S) download link. Enter a name to save the link as a source.</p>
+<p>On page 2, <strong>qtVlm direct import</strong> lists stored GRIB files with the import date and time. To remove a file, click <strong>Delete</strong> on the right and confirm.</p>
+<p>The file and the resulting weather run are available offline. GRIB extraction on the Pi requires <code>libeccodes-tools</code>.</p>
+<p>Cheers/C</p>
+</article>

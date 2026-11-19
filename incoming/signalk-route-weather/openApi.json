@@ -1,0 +1,141 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "LTC_Ocpn_Route_Importer v.1.1.47 API",
+    "version": "1.1.47",
+    "description": "Route weather providers, saved forecast runs, LTC harmonic current predictions, and polar settings."
+  },
+  "servers": [{ "url": "/plugins/signalk-route-weather" }],
+  "paths": {
+    "/version": {
+      "get": { "summary": "Read app and package version plus saved weather-run directory", "responses": { "200": { "description": "Version and storage location" } } }
+    },
+    "/qtvlm": {
+      "get": { "summary": "Read qtVlm receiver status and recent imports", "responses": { "200": { "description": "Receiver status, recent transfers and barrier files" } } },
+      "put": {
+        "summary": "Enable or disable automatic qtVlm discovery on UDP 5555",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "required": ["enabled"], "properties": { "enabled": { "type": "boolean" } } } } } },
+        "responses": { "200": { "description": "Receiver setting saved" }, "400": { "description": "Invalid receiver setting" } }
+      }
+    },
+    "/qtvlm/barrier": {
+      "get": {
+        "summary": "Read a received qtVlm barrier set as GeoJSON",
+        "parameters": [{ "name": "file", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "GeoJSON file" }, "404": { "description": "File not found" } }
+      }
+    },
+    "/local-grib": {
+      "get": { "summary": "List local GRIB files and saved download sources", "responses": { "200": { "description": "Files, available fields and source names" } } },
+      "post": {
+        "summary": "Import a GRIB file by absolute Pi path, direct HTTP(S) URL or saved source ID",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "properties": { "filePath": { "type": "string" }, "url": { "type": "string" }, "sourceId": { "type": "string" }, "sourceName": { "type": "string" } } } } } },
+        "responses": { "201": { "description": "Saved file and available fields" }, "400": { "description": "Invalid path or URL" }, "422": { "description": "Invalid or unsupported GRIB" } }
+      }
+    },
+    "/local-grib/{id}": {
+      "delete": {
+        "summary": "Delete a saved GRIB file",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "GRIB file deleted" }, "404": { "description": "File not found" }, "409": { "description": "File in use" } }
+      }
+    },
+    "/local-grib/upload": {
+      "post": {
+        "summary": "Upload a binary GRIB file of at most 128 MiB",
+        "parameters": [{ "name": "name", "in": "query", "schema": { "type": "string" } }],
+        "requestBody": { "required": true, "content": { "application/octet-stream": { "schema": { "type": "string", "format": "binary" } } } },
+        "responses": { "201": { "description": "Saved file and available fields" }, "413": { "description": "File exceeds upload limit" }, "422": { "description": "Invalid or unsupported GRIB" } }
+      }
+    },
+    "/settings": {
+      "get": {
+        "summary": "Read webapp settings",
+        "responses": { "200": { "description": "Current webapp settings" } }
+      },
+      "put": {
+        "summary": "Set LTC polar and current-data directories",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "type": "object", "required": ["polarDirectory"], "properties": { "polarDirectory": { "type": "string" }, "currentDirectory": { "type": "string" } } } } }
+        },
+        "responses": { "200": { "description": "Updated settings" }, "400": { "description": "Invalid directory" } }
+      }
+    },
+    "/gpx-files": {
+      "get": { "summary": "List GPX files in the configured Pi directory", "responses": { "200": { "description": "Directory and GPX filenames" } } },
+      "put": {
+        "summary": "Set the Pi GPX directory (empty string clears it)",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "required": ["directory"], "properties": { "directory": { "type": "string" } } } } } },
+        "responses": { "200": { "description": "Updated directory and GPX filenames" }, "400": { "description": "Invalid or inaccessible directory" } }
+      },
+      "delete": {
+        "summary": "Delete one GPX file from the Pi",
+        "parameters": [{ "name": "directory", "in": "query", "required": true, "schema": { "type": "string" } }, { "name": "file", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "File deleted" }, "404": { "description": "File not found" }, "409": { "description": "Directory changed" } }
+      }
+    },
+    "/gpx-files/content": {
+      "get": {
+        "summary": "Read one GPX file from the Pi",
+        "parameters": [{ "name": "directory", "in": "query", "required": true, "schema": { "type": "string" } }, { "name": "file", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "GPX text in a JSON object" }, "404": { "description": "File not found" }, "413": { "description": "File exceeds the GPX size limit" } }
+      }
+    },
+    "/provider-credentials": {
+      "get": { "summary": "Read provider key presence and MET Norway contact, never key values", "responses": { "200": { "description": "Credential status" } } },
+      "put": { "summary": "Store provider keys and MET Norway contact", "responses": { "200": { "description": "Updated credential status" }, "400": { "description": "Invalid credential data" } } }
+    },
+    "/provider-credentials/{id}": {
+      "delete": { "summary": "Delete a stored provider key", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "responses": { "200": { "description": "Updated credential status" } } }
+    },
+    "/raster-cache": {
+      "get": { "summary": "List locally stored raster files", "responses": { "200": { "description": "Raster cache directory, files and size" } } },
+      "delete": {
+        "summary": "Delete a raster file or clear the raster cache",
+        "parameters": [{ "name": "file", "in": "query", "description": "Relative filename returned by the cache listing. Omit to delete all completed raster files.", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Selected raster files deleted" }, "404": { "description": "Raster file not found" } }
+      }
+    },
+    "/polars": {
+      "get": { "summary": "List supported LTC polar files", "responses": { "200": { "description": "Polar files and validation warnings" } } }
+    },
+    "/polars/{id}": {
+      "get": {
+        "summary": "Read an LTC polar table",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "TWA/TWS VPP table" }, "404": { "description": "File not found" }, "422": { "description": "Unsupported polar format" } }
+      }
+    },
+    "/providers": {
+      "get": { "summary": "List direct weather providers", "responses": { "200": { "description": "Available provider ids" } } }
+    },
+    "/forecasts/point": {
+      "get": { "summary": "Get a normalized point forecast from a supported provider", "parameters": [ { "name": "provider", "in": "query", "required": true, "schema": { "type": "string", "enum": ["local-grib", "open-meteo", "met-no", "dmi-grib", "fmi-grib", "ecmwf-grib", "dwd-grib", "knmi-grib", "kmi-grib", "meteo-france-grib", "ecmwf-01-grib", "dwd-icon-d2", "dwd-icon-global", "ukmo-ukv", "ukmo-ukv-netcdf", "noaa-gfs025"] } }, { "name": "lat", "in": "query", "required": true, "schema": { "type": "number" } }, { "name": "lon", "in": "query", "required": true, "schema": { "type": "number" } }, { "name": "grib", "in": "query", "description": "Saved GRIB file ID for the local-grib provider", "schema": { "type": "string" } }, { "name": "localOnly", "in": "query", "description": "Use existing UKV NetCDF files", "schema": { "type": "boolean" } }, { "name": "extras", "in": "query", "schema": { "type": "string" } }, { "name": "marine", "in": "query", "schema": { "type": "string" } } ], "responses": { "200": { "description": "Normalized point forecast" }, "400": { "description": "Invalid coordinates" }, "409": { "description": "Provider credential missing" }, "422": { "description": "Coordinates outside the selected model" } } }
+    },
+    "/forecasts/marine": {
+      "get": { "summary": "Read optional Open-Meteo marine forecasts", "parameters": [{ "name": "lat", "in": "query", "required": true, "schema": { "type": "number" } }, { "name": "lon", "in": "query", "required": true, "schema": { "type": "number" } }, { "name": "fields", "in": "query", "required": true, "schema": { "type": "string" } }], "responses": { "200": { "description": "Marine forecasts and transfer size" } } }
+    },
+    "/current-datasets": {
+      "get": { "summary": "Compare LTC HARMONIC/IDX station coverage with route points", "parameters": [ { "name": "points", "in": "query", "required": true, "schema": { "type": "string" } } ], "responses": { "200": { "description": "Regional datasets and nearest station coverage" } } }
+    },
+    "/currents/predict": {
+      "get": { "summary": "Predict a current vector directly from the configured LTC HARMONIC/IDX files", "parameters": [ { "name": "latitude", "in": "query", "required": true, "schema": { "type": "number" } }, { "name": "longitude", "in": "query", "required": true, "schema": { "type": "number" } }, { "name": "time", "in": "query", "required": true, "schema": { "type": "string", "format": "date-time" } } ], "responses": { "200": { "description": "Predicted current set/drift vector" }, "400": { "description": "Invalid position or time" }, "422": { "description": "Unsupported LTC harmonic/index record" } } }
+    },
+    "/deletions": {
+      "post": {
+        "summary": "Delete multiple routes with their weather runs, or multiple weather runs",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "required": ["kind", "ids"], "properties": { "kind": { "type": "string", "enum": ["routes", "snapshots"] }, "ids": { "type": "array", "minItems": 1, "items": { "type": "string" } } } } } } },
+        "responses": { "200": { "description": "Deleted identifiers and item-specific errors" }, "400": { "description": "Invalid selection" } }
+      }
+    },
+    "/snapshots": {
+      "get": { "summary": "List saved forecast runs for a route", "parameters": [ { "name": "routeId", "in": "query", "required": true, "schema": { "type": "string" } } ], "responses": { "200": { "description": "Saved forecast runs" } } },
+      "post": { "summary": "Persist a fetched forecast run", "responses": { "201": { "description": "Stored forecast run" } } }
+    },
+    "/snapshots/{id}": {
+      "get": { "summary": "Read a saved forecast run", "parameters": [ { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } } ], "responses": { "200": { "description": "Saved forecast run" } } },
+      "delete": { "summary": "Delete a saved forecast run", "parameters": [ { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } } ], "responses": { "204": { "description": "Deleted" } } }
+    }
+  }
+}

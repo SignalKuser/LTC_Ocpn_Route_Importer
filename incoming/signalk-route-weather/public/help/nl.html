@@ -1,0 +1,185 @@
+<article lang="nl">
+  <p>Meertalig DE, NL, GB, FR</p>
+    <p>Download <a href="https://github.com/SignalKuser/LTC_Ocpn_Route_Importer/releases" target="_blank" rel="noopener noreferrer">https://github.com/SignalKuser?tab=repositories</a></p>
+  <section>
+    <h3>Vereisten</h3>
+    <p>OpenCPN, 32-bitsversie voor Windows</p>
+    <p>Signal K, Raspberry Pi ARM64</p>
+  </section>
+  <section>
+    <h3>Signal K voorbereiden</h3>
+    <p>De Signal K-plug-in (LTC_Ocpn_Route_Importer) kan lokale GPX-bestanden op Windows of de Raspberry Pi gebruiken.</p>
+    <p>Het is handiger om de route in OpenCPN te tekenen en rechtstreeks naar Signal K te sturen.</p>
+    <p>Maak in Signal K een gebruiker ‘opencpn’ met lees- en schrijfrechten aan en voer daarna het volgende commando in de terminal van de Pi uit om een token aan te maken:</p>
+    <pre><code>signalk-generate-token -u opencpn -e 1y -s ~/.signalk/security.json</code></pre>
+    <p>Daardoor kan Signal K later de OpenCPN-gegevens ontvangen. Bewaar het token of kopieer het en sla het op voor later gebruik.</p>
+  </section>
+  <section>
+    <h3>LTC_Ocpn_Route_Importer installeren</h3>
+    <p>Plaats het PowerShell-script en de plug-in bij voorkeur in dezelfde map en start het script vanuit die map.</p>
+    <p>Het script vindt automatisch de plug-in en de map voor Signal K-plug-ins op de Pi en installeert de plug-in daar.</p>
+    <p>Als Signal K al draait, herstart de server en zet de plug-in in de configuratie van Signal K op ‘Enable’.</p>
+    <p>De plug-in is beschikbaar onder ‘Webapps’.</p>
+  </section>
+  <section>
+    <h3>Aanvullende installaties</h3>
+    <p>Rasterproviders: De Pi heeft ‘grib_get’ nodig om GRIB-bestanden te lezen. Voer bij een internetverbinding de volgende commando’s uit in de terminal van de Pi:</p>
+    <pre><code>sudo apt-get update
+sudo apt-get install libeccodes-tools</code></pre>
+    <p>En voor DWD:</p>
+    <pre><code>sudo apt-get install bzip2</code></pre>
+    <p>Voor Met Office UKV (NetCDF) op de Pi is python3-gdal nodig.</p>
+    <pre><code>sudo apt-get install python3-gdal</code></pre>
+  </section>
+  <section>
+    <h3>Verwachte Signal K-plug-ins</h3>
+    <p>Ik heb de plug-in oorspronkelijk geschreven vanwege SMHI. Het Swedish Meteorological and Hydrological Institute biedt sinds kort een Signal K-plug-in aan met de naam SMHI Weather Provider.</p>
+    <p>Installeer die plug-in in Signal K om deze gegevens voor Zweden op te vragen.</p>
+  </section>
+  <section>
+    <h3>OpenCPN configureren</h3>
+    <p>Voor het rechtstreeks importeren van routes uit OpenCPN is de externe OpenCPN-plug-in <strong>Signal K Route Sender</strong> nodig.</p>
+    <p><a href="https://github.com/SignalKuser/LTC_Ocpn_Route_Importer/releases/tag/v.1.1.44" target="_blank" rel="noopener noreferrer">GitHub-release met Signal K Route Sender</a></p>
+    <p>Download en pak het RAR-archief uit onder <strong>Assets</strong>. Installeer het passende pakket <code>SignalKRouteSender-*.tar.gz</code> in OpenCPN via <strong>Plugins → Plugin importeren</strong> en activeer de plug-in.</p>
+    <p>Stel onder <strong>Opties → Verbindingen</strong> de Signal K-verbinding in en schakel die in. Als de server authenticatie vereist, voer dan in die verbinding het Signal K-token in onder <strong>Geavanceerd → Auth Token</strong>. De plug-in gebruikt deze verbinding.</p>
+  </section>
+  <section>
+    <h3>OpenCPN gebruiken</h3>
+    <p>Teken een route in OpenCPN. Klik met de rechtermuisknop op een waypoint en geef de route bij voorkeur een naam via ‘Route / Eigenschappen’ in het contextmenu.</p>
+    <p>Kies vervolgens ‘Naar Signal K sturen’ onder ‘Route’.</p>
+    <p>De GPX-route wordt naar Signal K gestuurd en is daarna beschikbaar op /signalk/v2/api/resources/routes.</p>
+    <p>Andere Signal K-plug-ins, zoals Freeboard-SK en Binnacle, slaan hun routes daar ook op. Die routes kunnen eveneens met LTC_Ocpn_Route_Importer worden gebruikt.</p>
+  </section>
+  <section>
+    <h3>LTC_Ocpn_Route_Importer gebruiken</h3>
+    <p>Kies op pagina 1 als routebron <strong>Signal K</strong>, <strong>GPX (Win)</strong> of <strong>GPX (Pi)</strong>. <strong>GPX (Win)</strong> opent de Windows-bestandskiezer, waarin je meerdere bestanden kunt selecteren. Voer bij <strong>GPX (Pi)</strong> het pad in, klik op <strong>Map opslaan</strong> en kies een bestand uit de lijst. Bevat een GPX-bestand meerdere routes, dan kun je die afzonderlijk selecteren. De waypoints verschijnen onderaan. Selecteer onder ‘Provider’ een weeraanbieder. De aanbieders werken op verschillende manieren. Sommige leveren een voorspelling voor bepaalde coördinaten en een specifiek tijdstip. Bij andere worden GRIB-bestanden automatisch gedownload en worden de coördinaten van de waypoints aan het GRIB-bestand gekoppeld om het weer te bepalen.</p>
+  </section>
+  <section>
+    <h3>Weer downloaden</h3>
+    <p>Het weer wordt gedownload, op basis van tijd aan de waypoints gekoppeld en direct opgeslagen. Selectie via ‘Opgeslagen weerrun’.</p>
+  </section>
+  <section>
+    <h3>Opgeslagen weerrun</h3>
+    <p>Keuze uit meerdere versies van dezelfde of verschillende providers. Opgeslagen weerruns kunnen daar worden verwijderd.</p>
+    <p>Dit kan helpen om verschillende providers voor dezelfde route te vergelijken.</p>
+  </section>
+  <section>
+    <h3>Geplande SOG</h3>
+    <p>Dit is de aangenomen snelheid over de grond bij het plannen in de haven, terwijl de boot stilligt.</p>
+    <p>Na het inschatten van de wind kan hier de verwachte SOG worden ingevuld.</p>
+    <p>Dit is het uitgangspunt voor de ETA-berekening.</p>
+  </section>
+  <section>
+    <h3>ETA-berekening</h3>
+    <h4>GPS, SOG, COG</h4>
+    <p>Bij voorkeur activeren voor de ETA. De positie en de werkelijke snelheid over de grond worden gebruikt. In die snelheid zitten de effecten van wind en stroming al verwerkt.</p>
+    <p>Als GPS, SOG en COG actief zijn en de ETA op GPS-gegevens is gebaseerd, gebruikt de app de gemeten SOG en berekent met COG welk deel van die snelheid in de richting van het volgende waypoint werkt. Voor latere trajecten gebruikt de app de passende snelheidsbron of de geplande SOG.</p>
+    <p>De stroming op de huidige positie zit al in de gemeten snelheid over de grond.</p>
+    <p>Als de stromingsvector uitstaat, berekent de app geen aanvullende stromingsvoorspelling voor latere trajecten.</p>
+    <p>Als er geen bruikbare GPS-SOG beschikbaar is en er geen andere snelheidsbron van toepassing is, gebruikt de app de geplande SOG.</p>
+    <p>Om de stroming met boordmetingen te schatten, zijn beide bewegingen als vector nodig:</p>
+    <ul>
+      <li>SOG en COG geven aan hoe snel en in welke richting de boot over de grond beweegt.</li>
+      <li>STW en de werkelijke bewegingsrichting door het water geven aan hoe de boot ten opzichte van het water beweegt.</li>
+    </ul>
+    <p>De voorliggende koers kan als benadering dienen. Bij zijwaartse drift wordt de schatting minder nauwkeurig.</p>
+    <p>Het verschil tussen deze vectoren geeft de geschatte stroming. STW alleen is onvoldoende.</p>
+    <h4>Stromingsvector</h4>
+    <p>De app gebruikt HARMONIC en HARMONIC.IDX voor de ETA wanneer ‘Stromingsvector’ actief is, passende gegevens beschikbaar zijn en de snelheid voor het traject afkomstig is van motor-SOG, de LTC-polair, STW of de geplande SOG.</p>
+    <p>Passende gegevens: De app controleert in de IDX-bestanden of de coördinaten van de waypoints passen. Plaats bij voorkeur alle IDX-bestanden in één map. De app doorzoekt ook de submappen automatisch en toont per waypoint welk IDX-bestand past. Zo kunnen verschillende IDX-bestanden voor één route worden gebruikt.</p>
+    <p>IDX-bestanden voor onder meer Europa, de Noordzee, de Duitse Bocht en de Oostzee <a href="https://github.com/SignalKuser?tab=repositories" target="_blank" rel="noopener noreferrer">https://github.com/SignalKuser?tab=repositories</a></p>
+    <p>Voor elk dergelijk traject vraagt de app de stroming op het eindwaypoint op voor de voorlopig geschatte aankomsttijd.</p>
+    <p>De app berekent hoeveel stroming langs en dwars op het traject werkt en past de ETA daarop aan. Een STW-meting is daarvoor optioneel.</p>
+    <p>Als een traject op gemeten GPS-SOG is gebaseerd, slaat de app de IDX-correctie voor dat traject over.</p>
+    <p>Bij het laden van een route kan de app wel controleren en tonen of passende stromingsstations beschikbaar zijn. Die controle op zichzelf verandert de ETA niet.</p>
+    <h4>STW – Speed Through Water</h4>
+    <p>Bij afwezigheid van GPS/SOG kan STW als snelheidsbasis voor de ETA dienen. Met de stromingsvector wordt de snelheid over de grond geschat. Zonder GPS-positie blijft de werkelijke voortgang op de route onbekend.</p>
+    <h4>AWS – Apparent Wind Speed</h4>
+    <p>Voor de ETA wordt uitgegaan van de huidige Signal K-wind op komende routetrajecten. Als de ware wind ontbreekt, leidt de app die af uit AWS/AWA, de snelheid van de boot en de koers. De LTC-polair wordt alleen gelezen en blijft ongewijzigd.</p>
+    <h4>Ware voorliggende koers gebruiken</h4>
+    <p>Als deze optie actief is, gebruikt de app ‘navigation.headingTrue’ om AWS/AWA te oriënteren. Anders dient COG als benadering.</p>
+    <p>Beschikbare STW wordt gebruikt om de wind uit AWS/AWA te berekenen. ‘STW – Speed Through Water’ bepaalt alleen of STW ook de snelheidsbasis voor de ETA kan vormen.</p>
+    <p>Als Signal K geen bron voor de voorliggende koers heeft, dient COG als benadering.</p>
+    <h4>Motor aan/uit</h4>
+    <p>Zodra ‘Motor aan/uit’ actief is, gebruikt de app motor-SOG als basis voor alle resterende routetrajecten.</p>
+    <p>Deze waarde heeft voorrang op GPS-SOG, de LTC-polair, STW en de geplande SOG.</p>
+    <p>Als de stromingsvector ook actief is en passende IDX-bestanden beschikbaar zijn, corrigeert de app motor-SOG voor elk traject.</p>
+    <h4>Polaire gegevens</h4>
+    <p>Polaire diagrammen bepalen de geschatte snelheid per traject als de optie actief is en een passend bestand is geselecteerd. De app gebruikt de verwachte ware windsnelheid (TWS) en de windhoek ten opzichte van het traject (TWA). Daarmee schat de app de snelheid waarmee de boot het volgende waypoint nadert. Bij tegenwind kan de berekening ook rekening houden met opkruisen.</p>
+    <p>Voorbeeld: Een traject van 20 nm duurt bij een geplande SOG van 5 kn ongeveer 4 uur. Voorspelt het polaire diagram door tegenwind slechts 4 kn voortgang naar het doel, dan rekent de app met 5 uur. Daardoor verschuiven ook de ETA’s van de volgende waypoints en eventueel de getoonde voorspellingstijden.</p>
+    <p>Motor-SOG heeft voorrang als de motor actief is. In zeilmodus heeft een bruikbaar polair diagram voorrang op GPS-SOG, STW en de geplande SOG.</p>
+    <p>De nauwkeurigheid van de ETA hangt dus ook af van hoe goed het gekozen polaire diagram de boot weergeeft.</p>
+  </section>
+  <section>
+    <h3>Waypointradius</h3>
+    <p>Een waypoint geldt als bereikt zodra de boot binnen de ingestelde radius komt.</p>
+  </section>
+  <section>
+    <h3>Afstand en peiling naar het volgende waypoint</h3>
+    <p>De huidige positie kan ver van de route liggen.</p>
+    <p>Hier staan de afstand en peiling naar het dichtstbijzijnde waypoint op de route.</p>
+    <p>Zodra dat waypoint is bereikt, gelden alle eerdere waypoints als gepasseerd.</p>
+  </section>
+  <section>
+    <h3>Weging van de wind</h3>
+    <p>De weergegeven wind komt van de provider en is een voorspelling. Aan boord gemeten wind is veel nauwkeuriger en telt daarom mee. Naarmate de afstand en de tijd toenemen, neemt het gewicht van de boordwindvector (windsnelheid en -richting) af, totdat die nauwelijks nog een rol speelt. Bij het naderen van een waypoint neemt het gewicht weer toe.</p>
+  </section>
+<h3>Bereik van de boordwind</h3>
+<p>De schuifregelaar heeft 15 standen. De derde stand is de standaard. Met toenemende afstand langs de route en geschatte vaartijd krijgt de voorspelling meer gewicht. De relatief verst gevorderde grens bepaalt het aandeel. Zodra één grens is bereikt, geldt 100% voorspelde wind als die beschikbaar en ingeschakeld is.</p>
+<ol>
+<li>0,5 nm of 10 min</li>
+<li>1 nm of 20 min</li>
+<li>2 nm of 30 min</li>
+<li>3 nm of 45 min</li>
+<li>5 nm of 60 min</li>
+</ol>
+<p>Van stand 6 tot en met 15 neemt het bereik per stap toe met 2 nm en 24 minuten. Stand 15 bereikt 25 nm of 5 uur.</p>
+<p>Als de gemengde windsnelheid lager is dan een derde van de som van de twee gewogen windsnelheden, gelden voor dat waypoint de volledige windsnelheid en windrichting van de zwaarst gewogen bron. Bij gelijke gewichten krijgt de boordwind voorrang.</p>
+<h3>Signal K-paden controleren</h3>
+<p>Zoek het pad onder <strong>Data → Browser</strong>. Voor eigen scheepsgegevens staat bij <strong>Context</strong> <code>self</code>. <strong>Value</strong>, <strong>Timestamp</strong> en <strong>Source</strong> tonen de waarde, het tijdstip en de bron.</p>
+<ul>
+<li><code>navigation.position</code> — Gps-positie voor routevoortgang, afstand en peiling naar het volgende waypoint</li>
+<li><code>navigation.speedOverGround</code> — Snelheid over de grond (SOG) voor ETA en als alternatief voor STW bij de windberekening</li>
+<li><code>navigation.courseOverGroundTrue</code> — Ware koers over de grond (COG) voor ETA en als benadering van de voorliggende koers</li>
+<li><code>navigation.speedThroughWater</code> — Snelheid door het water (STW) voor ETA en windberekening</li>
+<li><code>navigation.headingTrue</code> — Ware voorliggende koers als de optie actief is</li>
+<li><code>environment.wind.speedApparent</code> — Schijnbare windsnelheid (AWS)</li>
+<li><code>environment.wind.angleApparent</code> — Schijnbare windhoek (AWA) ten opzichte van de boeg</li>
+<li><code>environment.wind.speedTrue</code> — Ware windsnelheid (TWS)</li>
+<li><code>environment.wind.directionTrue</code> — Ware windrichting ten opzichte van het ware noorden</li>
+</ul>
+<h3>Signal K-API-eindpunten</h3>
+<p>Voeg het pad toe aan het adres van de Signal K-server om het in de browser te openen.</p>
+<ul>
+<li><code>/signalk/v1/api/vessels/self/navigation/speedThroughWater</code> — Voorbeeld van een boordwaarde in m/s</li>
+<li><code>/signalk/v2/api/vessels/self/navigation/course</code> — Actieve route, volgend waypoint en vaarrichting</li>
+<li><code>/signalk/v2/api/resources/routes</code> — Routes opgeslagen in Signal K</li>
+<li><code>/signalk/v2/api/weather/_providers</code> — Geregistreerde weeraanbieders</li>
+<li><code>/signalk/v2/api/weather/forecasts/point</code> — Voorspelling voor de coördinaten van een waypoint</li>
+</ul>
+<h3>Direct exporteren vanuit qtVlm</h3>
+<p>Schakel op pagina 2 de <strong>qtVlm-ontvangst</strong> in. Open in qtVlm <strong>Gegevensuitwisseling → Verzenden</strong>, kies het type en het gewenste item en klik op <strong>Verzenden</strong>. De Raspberry Pi vindt de afzender automatisch. Op pagina 2 staan de geïmporteerde items en eventuele foutmeldingen.</p>
+<p>Beide apparaten moeten op hetzelfde lokale netwerk zijn aangesloten, bijvoorbeeld op de hotspot van de boot-Pi. De firewall moet UDP-poort 5555 voor detectie en verbindingen van de Pi naar qtVlm op TCP-poort 5555 toelaten.</p>
+<ul>
+<li>Routes verschijnen bij de routebron Signal K.</li>
+<li>Trajecten verschijnen als routes bij de routebron Signal K.</li>
+<li>POI’s worden als Signal K-waypoints opgeslagen.</li>
+<li>POI-archieven worden als Signal K-waypoints met de archiefnaam opgeslagen.</li>
+<li>Barrièresets staan als GeoJSON-bestanden op pagina 2.</li>
+<li>Gearchiveerde tracks verschijnen als GPX-bestanden bij <strong>GPX (Pi)</strong>.</li>
+<li>GRIB-bestanden verschijnen bij GRIB-bestand laden.</li>
+</ul>
+<p>Voor qtVlm-routes en POI’s is Python 3 op de Pi vereist. Voer voor gps en wind het IP-adres van de Pi en poort <strong>10110</strong> in bij <strong>NMEA-verbindingen → Inkomend → Netwerkbronnen → TCP</strong>. De boot-Pi gebruikt standaard <code>10.42.0.1</code>. Signal K moet de gewenste NMEA 0183-zinnen uitvoeren.</p>
+<h3>Eigen GRIB-bestand</h3>
+<ol>
+<li>Schakel op pagina 2 <strong>qtVlm-ontvangst inschakelen</strong> in. Verstuur het GRIB-bestand vanuit qtVlm. Het ontvangen bestand verschijnt op pagina 2.</li>
+<li>Kies op pagina 1 <strong>Eigen GRIB-bestand</strong> in de providerlijst en klik onder de opgeslagen weerrun op <strong>GRIB-bestand laden</strong>.</li>
+<li>Selecteer het bestand bij <strong>Opgeslagen GRIB-bestanden</strong> en klik op <strong>Bestand gebruiken</strong>.</li>
+<li>Selecteer zo nodig de gewenste velden bij <strong>Extra gegevens ophalen</strong>. Klik daarna rechts op <strong>GRIB verwerken</strong>.</li>
+<li>Toon de ingelezen waarden in de tabel via <strong>Extra kolommen</strong>.</li>
+</ol>
+<p>Heb je al een bestand, begin dan bij stap 2. In het dialoogvenster kun je een bestand uploaden, een absoluut pad op de Pi invoeren of een directe HTTP(S)-downloadlink gebruiken. Geef de link een naam om deze als bron op te slaan.</p>
+<p>Op pagina 2 toont <strong>Directe qtVlm-import</strong> de opgeslagen GRIB-bestanden met importdatum en tijd. Klik rechts naast het bestand op <strong>Verwijderen</strong> en bevestig.</p>
+<p>Zowel het bestand als de weerrun is offline beschikbaar. Voor GRIB-verwerking moet op de Pi <code>libeccodes-tools</code> zijn geïnstalleerd.</p>
+<p>Goede vaart/C</p>
+</article>
