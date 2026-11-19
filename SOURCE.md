@@ -7,7 +7,7 @@ Route Sender **0.5.6**. Publishing the source does not create new app versions.
   translated help, screenshots and qtVlm tests.
 - [OpenCPN Route Sender](incoming/signalk-route-sender/): active C++ source,
   CMake project and plugin assets.
-- [Licenses](LICENSE.md): MIT for the Signal K app; GPL-2.0-or-later for the
+- [Licenses](LICENSING.md): MIT for the Signal K app; GPL-2.0-or-later for the
   OpenCPN sender.
 
 ## Get the source
