@@ -1,7 +1,7 @@
 ## LTC_RouteWeather_Importer1.1.50.rar
-Directimport AvNAv, Freeboard SK ect.
-Waypointweather over time
-help changed..
+1.Directimport AvNAv, Freeboard SK ect.
+2.Waypointweather over time
+3.help changed..
 
 <img width="1918" height="870" alt="Screenshot 2026-11-19 171405" src="https://github.com/user-attachments/assets/2a61384d-a36f-446c-8a3f-f363677557dd" />
 
