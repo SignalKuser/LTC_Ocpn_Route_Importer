@@ -3,7 +3,8 @@ Directimport AvNAv, Freeboard SK ect.
 Waypointweather over time
 help changed..
 
-<img width="1890" height="830" alt="xxxxx" src="https://github.com/user-attachments/assets/a36ae8d8-81fe-4332-85a1-cfb8a82ef8a0" />
+<img width="1918" height="870" alt="Screenshot 2026-11-19 171405" src="https://github.com/user-attachments/assets/2a61384d-a36f-446c-8a3f-f363677557dd" />
+
 
 
 
